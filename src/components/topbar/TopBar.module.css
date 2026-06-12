@@ -1,0 +1,23 @@
+.topbar {
+  height: 64px;
+  background: white;
+  border-bottom: 1px solid #e1e5ef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logoutButton {
+  border: 1px solid #d0d5e2;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
