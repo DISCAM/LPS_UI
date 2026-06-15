@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/useAuth";
 
 export const TopBar = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogaut = () => {
+  const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
   };
@@ -18,8 +18,15 @@ export const TopBar = () => {
       </div>
 
       <div className={styles.userBox}>
-        {/*<span>Admin</span>*/}
-        <button onClick={handleLogaut} className={styles.logoutButton}>
+        <span>
+          {" "}
+          {user?.email && (
+            <span>
+              {user.userName} | <b>{user.roles.join(", ")}</b>
+            </span>
+          )}
+        </span>
+        <button onClick={handleLogout} className={styles.logoutButton}>
           Wyloguj
         </button>
       </div>

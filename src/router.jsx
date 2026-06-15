@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
-
+import { RoleProtectedRoute } from "./auth/RoleProtectedRoute";
 import { LoginPage } from "./pages/login/LoginPage";
 import { DashboardPage } from "./pages/dashboard/DashboardPage";
 import { UsersPage } from "./pages/users/UsersPage";
@@ -32,7 +32,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: <UsersPage />,
+        element: (
+          <RoleProtectedRoute allowedRoles={["SuperAdmin"]}>
+            <UsersPage />
+          </RoleProtectedRoute>
+        ),
       },
       {
         path: "products",
