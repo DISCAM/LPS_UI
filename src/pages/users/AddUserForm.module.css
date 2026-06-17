@@ -1,0 +1,39 @@
+.form {
+  background-color: white;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.form h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.row label {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.row input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
