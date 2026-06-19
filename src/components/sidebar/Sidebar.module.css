@@ -36,3 +36,50 @@
   opacity: 1;
   font-weight: 600;
 }
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.groupButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: white;
+  text-decoration: none;
+  padding: 12px 14px;
+  border-radius: 8px;
+  opacity: 0.85;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.groupButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+  opacity: 1;
+}
+
+.groupButtonActive {
+  background: white;
+  color: #0e1d77;
+  opacity: 1;
+  font-weight: 600;
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subLink {
+  padding-left: 32px;
+  font-size: 0.8rem;
+}

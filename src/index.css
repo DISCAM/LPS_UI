@@ -4,13 +4,8 @@
 
 body {
   margin: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  color: #1f2937;
+  font-size: 0.8rem;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
 }
 
 button,
