@@ -9,7 +9,7 @@ export const CustomerForm = ({
   onCancel,
 }) => {
   const [form, setForm] = useState({
-    id: customer?.id,
+    id: customer?.id ?? null,
     customerCode: customer?.customerCode ?? "",
     name: customer?.name ?? "",
     taxNumber: customer?.taxNumber ?? "",
@@ -30,10 +30,29 @@ export const CustomerForm = ({
     }));
   };
 
+  const emptyToNull = (value) => {
+    const trimmedValue = value.trim();
+
+    return trimmedValue === "" ? null : trimmedValue;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await onSubmit(form);
+    const dataToSend = {
+      ...(form.id !== null && { id: form.id }),
+      customerCode: form.customerCode.trim(),
+      name: form.name.trim(),
+      taxNumber: emptyToNull(form.taxNumber),
+      email: emptyToNull(form.email),
+      phone: emptyToNull(form.phone),
+      street: emptyToNull(form.street),
+      postalCode: emptyToNull(form.postalCode),
+      city: emptyToNull(form.city),
+      country: emptyToNull(form.country),
+    };
+
+    await onSubmit(dataToSend);
   };
 
   return (
@@ -43,12 +62,14 @@ export const CustomerForm = ({
       {customer && (
         <div className={styles.row}>
           <label>ID</label>
-          <input value={form.id} disabled />
+
+          <input value={form.id ?? ""} disabled />
         </div>
       )}
 
       <div className={styles.row}>
         <label>Kod klienta</label>
+
         <input
           name="customerCode"
           type="text"
@@ -61,6 +82,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>Nazwa</label>
+
         <input
           name="name"
           type="text"
@@ -73,6 +95,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>NIP / numer podatkowy</label>
+
         <input
           name="taxNumber"
           type="text"
@@ -83,7 +106,8 @@ export const CustomerForm = ({
       </div>
 
       <div className={styles.row}>
-        <label>Email</label>
+        <label>E-mail</label>
+
         <input
           name="email"
           type="email"
@@ -95,6 +119,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>Telefon</label>
+
         <input
           name="phone"
           type="text"
@@ -106,6 +131,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>Ulica</label>
+
         <input
           name="street"
           type="text"
@@ -117,6 +143,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>Kod pocztowy</label>
+
         <input
           name="postalCode"
           type="text"
@@ -128,6 +155,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>Miasto</label>
+
         <input
           name="city"
           type="text"
@@ -139,6 +167,7 @@ export const CustomerForm = ({
 
       <div className={styles.row}>
         <label>Kraj</label>
+
         <input
           name="country"
           type="text"
@@ -149,8 +178,15 @@ export const CustomerForm = ({
       </div>
 
       <div className={styles.actions}>
-        <button type="submit">{submitText}</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" className={styles.primaryButton}>
+          {submitText}
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className={styles.actionButton}
+        >
           Anuluj
         </button>
       </div>

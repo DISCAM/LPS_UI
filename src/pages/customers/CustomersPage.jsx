@@ -5,6 +5,7 @@ import {
   editCustomerRequest,
   getCustomersRequest,
 } from "../../api/customersApi";
+
 import { formatDate } from "../../helpers/formatDate";
 import { CustomerForm } from "./CustomerForm";
 import styles from "./CustomersPage.module.css";
@@ -13,11 +14,14 @@ export const CustomersPage = () => {
   const [customers, setCustomers] = useState([]);
   const [isFormShown, setIsFormShown] = useState(false);
   const [selectedCustomerForEdit, setSelectedCustomerForEdit] = useState(null);
+  const [selectedCustomerForDetails, setSelectedCustomerForDetails] =
+    useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const loadCustomers = async () => {
     const data = await getCustomersRequest();
+
     setCustomers(data);
   };
 
@@ -61,6 +65,10 @@ export const CustomersPage = () => {
 
       await deleteCustomerRequest(customerId);
       await loadCustomers();
+
+      if (selectedCustomerForDetails?.id === customerId) {
+        setSelectedCustomerForDetails(null);
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -92,13 +100,15 @@ export const CustomersPage = () => {
           <p>Zarządzanie klientami systemu</p>
         </div>
 
-        {!isFormShown && (
+        {!isFormShown && !selectedCustomerForEdit && (
           <button
+            type="button"
+            className={styles.primaryButton}
             onClick={() => {
               setIsFormShown(true);
               setSelectedCustomerForEdit(null);
+              setSelectedCustomerForDetails(null);
             }}
-            className={styles.addButton}
           >
             Dodaj klienta
           </button>
@@ -109,6 +119,7 @@ export const CustomersPage = () => {
 
       {isFormShown && (
         <CustomerForm
+          key="create-customer"
           title="Dodaj klienta"
           submitText="Dodaj klienta"
           onSubmit={handleCreateCustomer}
@@ -118,6 +129,7 @@ export const CustomersPage = () => {
 
       {selectedCustomerForEdit && (
         <CustomerForm
+          key={selectedCustomerForEdit.id}
           customer={selectedCustomerForEdit}
           title="Edytuj klienta"
           submitText="Zapisz zmiany"
@@ -126,52 +138,180 @@ export const CustomersPage = () => {
         />
       )}
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Kod klienta</th>
-            <th>Nazwa</th>
-            <th>NIP</th>
-            <th>Email</th>
-            <th>Telefon</th>
-            <th>Miasto</th>
-            <th>Kraj</th>
-            <th>Utworzono</th>
-            <th>Akcje</th>
-          </tr>
-        </thead>
+      {selectedCustomerForDetails && (
+        <section className={styles.details}>
+          <div className={styles.detailsHeader}>
+            <h2>Szczegóły klienta</h2>
 
-        <tbody>
-          {customers.map((customer) => (
-            <tr key={customer.id}>
-              <td>{customer.id}</td>
-              <td>{customer.customerCode}</td>
-              <td>{customer.name}</td>
-              <td>{customer.taxNumber ?? "-"}</td>
-              <td>{customer.email ?? "-"}</td>
-              <td>{customer.phone ?? "-"}</td>
-              <td>{customer.city ?? "-"}</td>
-              <td>{customer.country ?? "-"}</td>
-              <td>{formatDate(customer.createdAt)}</td>
-              <td>
-                <button
-                  onClick={() => {
-                    setSelectedCustomerForEdit(customer);
-                    setIsFormShown(false);
-                  }}
-                >
-                  Edytuj
-                </button>
+            <button
+              type="button"
+              className={styles.actionButton}
+              onClick={() => setSelectedCustomerForDetails(null)}
+            >
+              Zamknij
+            </button>
+          </div>
 
-                <button onClick={() => handleDeleteCustomer(customer.id)}>
-                  Dezaktywuj
-                </button>
-              </td>
+          <div className={styles.detailsGrid}>
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>ID</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.id}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Kod klienta</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.customerCode}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Nazwa</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.name}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>NIP / numer podatkowy</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.taxNumber ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>E-mail</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.email ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Telefon</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.phone ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Ulica</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.street ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Kod pocztowy</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.postalCode ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Miasto</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.city ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Kraj</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.country ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Utworzono</span>
+              <strong className={styles.detailsValue}>
+                {formatDate(selectedCustomerForDetails.createdAt)}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Ostatnia modyfikacja</span>
+              <strong className={styles.detailsValue}>
+                {selectedCustomerForDetails.modifiedAt
+                  ? formatDate(selectedCustomerForDetails.modifiedAt)
+                  : "-"}
+              </strong>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Kod klienta</th>
+              <th>Nazwa</th>
+              <th>NIP</th>
+              <th>E-mail</th>
+              <th>Telefon</th>
+              <th>Miasto</th>
+              <th>Kraj</th>
+              <th>Utworzono</th>
+              <th>Akcje</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {customers.map((customer) => (
+              <tr key={customer.id}>
+                <td>{customer.id}</td>
+                <td>{customer.customerCode}</td>
+                <td>{customer.name}</td>
+                <td>{customer.taxNumber ?? "-"}</td>
+                <td>{customer.email ?? "-"}</td>
+                <td>{customer.phone ?? "-"}</td>
+                <td>{customer.city ?? "-"}</td>
+                <td>{customer.country ?? "-"}</td>
+                <td>{formatDate(customer.createdAt)}</td>
+
+                <td>
+                  <div className={styles.actionsCell}>
+                    <button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={() => {
+                        setSelectedCustomerForDetails(customer);
+                        setSelectedCustomerForEdit(null);
+                        setIsFormShown(false);
+                      }}
+                    >
+                      Wyświetl
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={() => {
+                        setSelectedCustomerForEdit(customer);
+                        setSelectedCustomerForDetails(null);
+                        setIsFormShown(false);
+                      }}
+                    >
+                      Edytuj
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={() => handleDeleteCustomer(customer.id)}
+                    >
+                      Usuń
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 };

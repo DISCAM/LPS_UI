@@ -9,7 +9,7 @@ export const ProductsForm = ({
   onCancel,
 }) => {
   const [form, setForm] = useState({
-    id: product?.id,
+    id: product?.id ?? null,
     productCode: product?.productCode ?? "",
     name: product?.name ?? "",
     description: product?.description ?? "",
@@ -26,10 +26,25 @@ export const ProductsForm = ({
     }));
   };
 
+  const emptyToNull = (value) => {
+    const trimmedValue = value.trim();
+
+    return trimmedValue === "" ? null : trimmedValue;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await onSubmit(form);
+    const dataToSend = {
+      ...(form.id !== null && { id: form.id }),
+      productCode: form.productCode.trim(),
+      name: form.name.trim(),
+      description: emptyToNull(form.description),
+      ean: emptyToNull(form.ean),
+      gtin: emptyToNull(form.gtin),
+    };
+
+    await onSubmit(dataToSend);
   };
 
   return (
@@ -39,43 +54,51 @@ export const ProductsForm = ({
       {product && (
         <div className={styles.row}>
           <label>ID</label>
-          <input value={form.id} disabled />
+
+          <input value={form.id ?? ""} disabled />
         </div>
       )}
 
       <div className={styles.row}>
         <label>Kod produktu</label>
+
         <input
           name="productCode"
           type="text"
           value={form.productCode}
           onChange={handleChange}
           required
+          maxLength={50}
         />
       </div>
 
       <div className={styles.row}>
         <label>Nazwa</label>
+
         <input
           name="name"
           type="text"
           value={form.name}
           onChange={handleChange}
           required
+          maxLength={150}
         />
       </div>
 
       <div className={styles.row}>
         <label>Opis</label>
+
         <textarea
           name="description"
           value={form.description}
           onChange={handleChange}
+          maxLength={500}
         />
       </div>
 
       <div className={styles.row}>
         <label>EAN</label>
+
         <input
           name="ean"
           type="text"
@@ -87,6 +110,7 @@ export const ProductsForm = ({
 
       <div className={styles.row}>
         <label>GTIN</label>
+
         <input
           name="gtin"
           type="text"
@@ -97,8 +121,15 @@ export const ProductsForm = ({
       </div>
 
       <div className={styles.actions}>
-        <button type="submit">{submitText}</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" className={styles.primaryButton}>
+          {submitText}
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className={styles.actionButton}
+        >
           Anuluj
         </button>
       </div>

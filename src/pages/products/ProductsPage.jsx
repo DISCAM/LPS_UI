@@ -14,11 +14,26 @@ export const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [isFormShown, setIsFormShown] = useState(false);
   const [selectedProductForEdit, setSelectedProductForEdit] = useState(null);
+  const [selectedProductForDetails, setSelectedProductForDetails] =
+    useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const truncateText = (text, maxLength = 50) => {
+    if (!text) {
+      return "-";
+    }
+
+    if (text.length <= maxLength) {
+      return text;
+    }
+
+    return `${text.slice(0, maxLength)}…`;
+  };
+
   const loadProducts = async () => {
     const data = await getProductsRequest();
+
     setProducts(data);
   };
 
@@ -62,6 +77,10 @@ export const ProductsPage = () => {
 
       await deleteProductRequest(productId);
       await loadProducts();
+
+      if (selectedProductForDetails?.id === productId) {
+        setSelectedProductForDetails(null);
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -93,13 +112,15 @@ export const ProductsPage = () => {
           <p>Zarządzanie produktami w systemie etykiet</p>
         </div>
 
-        {!isFormShown && (
+        {!isFormShown && !selectedProductForEdit && (
           <button
+            type="button"
+            className={styles.primaryButton}
             onClick={() => {
               setIsFormShown(true);
               setSelectedProductForEdit(null);
+              setSelectedProductForDetails(null);
             }}
-            className={styles.addButton}
           >
             Dodaj produkt
           </button>
@@ -110,6 +131,7 @@ export const ProductsPage = () => {
 
       {isFormShown && (
         <ProductsForm
+          key="create-product"
           title="Dodaj produkt"
           submitText="Dodaj produkt"
           onSubmit={handleCreateProduct}
@@ -119,6 +141,7 @@ export const ProductsPage = () => {
 
       {selectedProductForEdit && (
         <ProductsForm
+          key={selectedProductForEdit.id}
           product={selectedProductForEdit}
           title="Edytuj produkt"
           submitText="Zapisz zmiany"
@@ -127,48 +150,156 @@ export const ProductsPage = () => {
         />
       )}
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Kod produktu</th>
-            <th>Nazwa</th>
-            <th>Opis</th>
-            <th>EAN</th>
-            <th>GTIN</th>
-            <th>Utworzono</th>
-            <th>Akcje</th>
-          </tr>
-        </thead>
+      {selectedProductForDetails && (
+        <section className={styles.details}>
+          <div className={styles.detailsHeader}>
+            <h2>Szczegóły produktu</h2>
 
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.id}</td>
-              <td>{product.productCode}</td>
-              <td>{product.name}</td>
-              <td>{product.description ?? "-"}</td>
-              <td>{product.ean ?? "-"}</td>
-              <td>{product.gtin ?? "-"}</td>
-              <td>{formatDate(product.createdAt)}</td>
-              <td>
-                <button
-                  onClick={() => {
-                    setSelectedProductForEdit(product);
-                    setIsFormShown(false);
-                  }}
-                >
-                  Edytuj
-                </button>
+            <button
+              type="button"
+              className={styles.actionButton}
+              onClick={() => setSelectedProductForDetails(null)}
+            >
+              Zamknij
+            </button>
+          </div>
 
-                <button onClick={() => handleDeleteProduct(product.id)}>
-                  Dezaktywuj
-                </button>
-              </td>
+          <div className={styles.detailsGrid}>
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>ID</span>
+              <strong className={styles.detailsValue}>
+                {selectedProductForDetails.id}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Kod produktu</span>
+              <strong className={styles.detailsValue}>
+                {selectedProductForDetails.productCode}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Nazwa</span>
+              <strong className={styles.detailsValue}>
+                {selectedProductForDetails.name}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>EAN</span>
+              <strong className={styles.detailsValue}>
+                {selectedProductForDetails.ean ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>GTIN</span>
+              <strong className={styles.detailsValue}>
+                {selectedProductForDetails.gtin ?? "-"}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Utworzono</span>
+              <strong className={styles.detailsValue}>
+                {formatDate(selectedProductForDetails.createdAt)}
+              </strong>
+            </div>
+
+            <div className={styles.detailsItem}>
+              <span className={styles.detailsLabel}>Ostatnia modyfikacja</span>
+              <strong className={styles.detailsValue}>
+                {selectedProductForDetails.modifiedAt
+                  ? formatDate(selectedProductForDetails.modifiedAt)
+                  : "-"}
+              </strong>
+            </div>
+          </div>
+
+          <div className={styles.description}>
+            <span className={styles.descriptionLabel}>Opis</span>
+
+            <p className={styles.descriptionValue}>
+              {selectedProductForDetails.description ?? "-"}
+            </p>
+          </div>
+        </section>
+      )}
+
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Kod produktu</th>
+              <th>Nazwa</th>
+              <th>Opis</th>
+              <th>EAN</th>
+              <th>GTIN</th>
+              <th>Utworzono</th>
+              <th>Akcje</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id}>
+                <td>{product.id}</td>
+                <td>{product.productCode}</td>
+                <td>{product.name}</td>
+
+                <td
+                  className={styles.descriptionCell}
+                  title={product.description ?? ""}
+                >
+                  {truncateText(product.description)}
+                </td>
+
+                <td>{product.ean ?? "-"}</td>
+                <td>{product.gtin ?? "-"}</td>
+                <td>{formatDate(product.createdAt)}</td>
+
+                <td>
+                  <div className={styles.actionsCell}>
+                    <button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={() => {
+                        setSelectedProductForDetails(product);
+                        setSelectedProductForEdit(null);
+                        setIsFormShown(false);
+                      }}
+                    >
+                      Wyświetl
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={() => {
+                        setSelectedProductForEdit(product);
+                        setSelectedProductForDetails(null);
+                        setIsFormShown(false);
+                      }}
+                    >
+                      Edytuj
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.actionButton}
+                      onClick={() => handleDeleteProduct(product.id)}
+                    >
+                      Usuń
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 };

@@ -115,7 +115,7 @@ export const UsersPage = () => {
         {!isFormShown && (
           <button
             onClick={() => setIsFormShown(true)}
-            className={styles.addButton}
+            className={styles.primaryButton}
           >
             Dodaj użytkownika
           </button>
@@ -168,15 +168,28 @@ export const UsersPage = () => {
               <td>{user.roleName ?? user.roles?.join(", ") ?? "-"}</td>
               <td>{formatDate(user.createdAt)}</td>
               <td>
-                <button onClick={() => setSelectedUserForEdit(user)}>
-                  Edytuj
-                </button>
+                <div className={styles.actionsCell}>
+                  <button
+                    className={styles.actionButton}
+                    onClick={() => setSelectedUserForEdit(user)}
+                  >
+                    Edytuj
+                  </button>
 
-                <button onClick={() => setSelectedUserForRole(user)}>
-                  Rola
-                </button>
+                  <button
+                    className={styles.actionButton}
+                    onClick={() => setSelectedUserForRole(user)}
+                  >
+                    Rola
+                  </button>
 
-                <button onClick={() => handleDeleteUser(user.id)}>Usuń</button>
+                  <button
+                    className={styles.actionButton}
+                    onClick={() => handleDeleteUser(user.id)}
+                  >
+                    Usuń
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
