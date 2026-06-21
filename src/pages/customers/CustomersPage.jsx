@@ -260,55 +260,63 @@ export const CustomersPage = () => {
           </thead>
 
           <tbody>
-            {customers.map((customer) => (
-              <tr key={customer.id}>
-                <td>{customer.id}</td>
-                <td>{customer.customerCode}</td>
-                <td>{customer.name}</td>
-                <td>{customer.taxNumber ?? "-"}</td>
-                <td>{customer.email ?? "-"}</td>
-                <td>{customer.phone ?? "-"}</td>
-                <td>{customer.city ?? "-"}</td>
-                <td>{customer.country ?? "-"}</td>
-                <td>{formatDate(customer.createdAt)}</td>
-
-                <td>
-                  <div className={styles.actionsCell}>
-                    <button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={() => {
-                        setSelectedCustomerForDetails(customer);
-                        setSelectedCustomerForEdit(null);
-                        setIsFormShown(false);
-                      }}
-                    >
-                      Wyświetl
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={() => {
-                        setSelectedCustomerForEdit(customer);
-                        setSelectedCustomerForDetails(null);
-                        setIsFormShown(false);
-                      }}
-                    >
-                      Edytuj
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={() => handleDeleteCustomer(customer.id)}
-                    >
-                      Usuń
-                    </button>
-                  </div>
+            {customers.length === 0 ? (
+              <tr>
+                <td colSpan="10" className={styles.emptyState}>
+                  Brak aktywnych klientów.
                 </td>
               </tr>
-            ))}
+            ) : (
+              customers.map((customer) => (
+                <tr key={customer.id}>
+                  <td>{customer.id}</td>
+                  <td>{customer.customerCode}</td>
+                  <td>{customer.name}</td>
+                  <td>{customer.taxNumber ?? "-"}</td>
+                  <td>{customer.email ?? "-"}</td>
+                  <td>{customer.phone ?? "-"}</td>
+                  <td>{customer.city ?? "-"}</td>
+                  <td>{customer.country ?? "-"}</td>
+                  <td>{formatDate(customer.createdAt)}</td>
+
+                  <td>
+                    <div className={styles.actionsCell}>
+                      <button
+                        type="button"
+                        className={styles.actionButton}
+                        onClick={() => {
+                          setSelectedCustomerForDetails(customer);
+                          setSelectedCustomerForEdit(null);
+                          setIsFormShown(false);
+                        }}
+                      >
+                        Wyświetl
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.actionButton}
+                        onClick={() => {
+                          setSelectedCustomerForEdit(customer);
+                          setSelectedCustomerForDetails(null);
+                          setIsFormShown(false);
+                        }}
+                      >
+                        Edytuj
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.actionButton}
+                        onClick={() => handleDeleteCustomer(customer.id)}
+                      >
+                        Usuń
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

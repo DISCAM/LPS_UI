@@ -14,6 +14,7 @@ import { ProductsPage } from "./pages/products/ProductsPage";
 import { CustomersPage } from "./pages/customers/CustomersPage";
 import { PrintersPage } from "./pages/printers/PrintersPage";
 import { LabelTemplatesPage } from "./pages/label-templates/LabelTemplatesPage";
+import { ConfigurationPage } from "./pages/configuration/ConfigurationPage";
 
 export const router = createBrowserRouter([
   {
@@ -63,12 +64,22 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "printers",
-        element: <PrintersPage />,
-      },
-      {
-        path: "label-templates",
-        element: <LabelTemplatesPage />,
+        path: "configuration",
+        element: <ConfigurationPage />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="printers" replace />,
+          },
+          {
+            path: "printers",
+            element: <PrintersPage />,
+          },
+          {
+            path: "label-templates",
+            element: <LabelTemplatesPage />,
+          },
+        ],
       },
     ],
   },

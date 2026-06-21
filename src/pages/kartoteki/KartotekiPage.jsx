@@ -36,10 +36,6 @@ export const KartotekiPage = () => {
               }
             >
               <span className={styles.quickCardTitle}>{item.title}</span>
-
-              <span className={styles.quickCardDescription}>
-                {item.description}
-              </span>
             </NavLink>
           ))}
         </nav>

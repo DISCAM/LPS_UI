@@ -243,60 +243,68 @@ export const ProductsPage = () => {
           </thead>
 
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>{product.productCode}</td>
-                <td>{product.name}</td>
-
-                <td
-                  className={styles.descriptionCell}
-                  title={product.description ?? ""}
-                >
-                  {truncateText(product.description)}
-                </td>
-
-                <td>{product.ean ?? "-"}</td>
-                <td>{product.gtin ?? "-"}</td>
-                <td>{formatDate(product.createdAt)}</td>
-
-                <td>
-                  <div className={styles.actionsCell}>
-                    <button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={() => {
-                        setSelectedProductForDetails(product);
-                        setSelectedProductForEdit(null);
-                        setIsFormShown(false);
-                      }}
-                    >
-                      Wyświetl
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={() => {
-                        setSelectedProductForEdit(product);
-                        setSelectedProductForDetails(null);
-                        setIsFormShown(false);
-                      }}
-                    >
-                      Edytuj
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.actionButton}
-                      onClick={() => handleDeleteProduct(product.id)}
-                    >
-                      Usuń
-                    </button>
-                  </div>
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan="10" className={styles.emptyState}>
+                  Brak Produktów.
                 </td>
               </tr>
-            ))}
+            ) : (
+              products.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>{product.productCode}</td>
+                  <td>{product.name}</td>
+
+                  <td
+                    className={styles.descriptionCell}
+                    title={product.description ?? ""}
+                  >
+                    {truncateText(product.description)}
+                  </td>
+
+                  <td>{product.ean ?? "-"}</td>
+                  <td>{product.gtin ?? "-"}</td>
+                  <td>{formatDate(product.createdAt)}</td>
+
+                  <td>
+                    <div className={styles.actionsCell}>
+                      <button
+                        type="button"
+                        className={styles.actionButton}
+                        onClick={() => {
+                          setSelectedProductForDetails(product);
+                          setSelectedProductForEdit(null);
+                          setIsFormShown(false);
+                        }}
+                      >
+                        Wyświetl
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.actionButton}
+                        onClick={() => {
+                          setSelectedProductForEdit(product);
+                          setSelectedProductForDetails(null);
+                          setIsFormShown(false);
+                        }}
+                      >
+                        Edytuj
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.actionButton}
+                        onClick={() => handleDeleteProduct(product.id)}
+                      >
+                        Usuń
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

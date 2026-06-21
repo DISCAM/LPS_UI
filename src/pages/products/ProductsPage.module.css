@@ -1,7 +1,3 @@
-.page {
-  padding: 24px;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
@@ -88,7 +84,7 @@
   font-weight: 700;
   white-space: nowrap;
 }
-
+/* to zobaczyć */
 .descriptionCell {
   min-width: 220px;
   max-width: 320px;
@@ -147,6 +143,7 @@
   color: #000000;
   font-size: 1rem;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .description {
@@ -167,6 +164,11 @@
   white-space: pre-wrap;
 }
 
+.emptyState {
+  padding: 24px;
+  text-align: center;
+  color: #666666;
+}
 @media (max-width: 900px) {
   .page {
     padding: 16px;

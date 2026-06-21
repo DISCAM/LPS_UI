@@ -140,6 +140,12 @@
   overflow-wrap: anywhere;
 }
 
+.emptyState {
+  padding: 24px;
+  text-align: center;
+  color: #666666;
+}
+
 @media (max-width: 900px) {
   .page {
     padding: 16px;
@@ -158,4 +164,6 @@
   .actionsCell {
     min-width: 240px;
   }
+
+  
 }

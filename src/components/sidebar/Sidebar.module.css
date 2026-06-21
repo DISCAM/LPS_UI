@@ -1,6 +1,6 @@
 .sidebar {
-  width: 260px;
-  min-width: 260px;
+  width: 300px;
+  min-width: 300px;
   flex-shrink: 0;
   box-sizing: border-box;
 
@@ -10,9 +10,16 @@
 }
 
 .logo {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 32px;
+}
+
+.logo:hover {
+  opacity: 0.85;
 }
 
 .nav {
@@ -27,6 +34,8 @@
   padding: 12px 14px;
   border-radius: 8px;
   opacity: 0.85;
+  font-size: 1rem;
+  border: 1px solid white;
 }
 
 .link:hover {
@@ -35,8 +44,8 @@
 }
 
 .active {
-  background: white;
-  color: #0e1d77;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
   opacity: 1;
   font-weight: 600;
 }
@@ -49,7 +58,7 @@
 
 .groupButton {
   width: 100%;
-  border: none;
+  border: 1px solid white;
   background: transparent;
   color: white;
   text-decoration: none;
@@ -57,7 +66,7 @@
   border-radius: 8px;
   opacity: 0.85;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   font-family: inherit;
 
   display: flex;
@@ -71,8 +80,8 @@
 }
 
 .groupButtonActive {
-  background: white;
-  color: #0e1d77;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
   opacity: 1;
   font-weight: 600;
 }
@@ -85,5 +94,6 @@
 
 .subLink {
   padding-left: 32px;
-  font-size: 0.8rem;
+  font-size: 1rem;
+  border: none;
 }
