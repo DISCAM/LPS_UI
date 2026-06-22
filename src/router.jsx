@@ -77,7 +77,13 @@ export const router = createBrowserRouter([
           },
           {
             path: "label-templates",
-            element: <LabelTemplatesPage />,
+            element: (
+              <RoleProtectedRoute
+                allowedRoles={["SuperAdmin", "Admin", "Manager"]}
+              >
+                <LabelTemplatesPage />
+              </RoleProtectedRoute>
+            ),
           },
         ],
       },

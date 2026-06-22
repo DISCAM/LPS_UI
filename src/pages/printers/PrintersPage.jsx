@@ -274,11 +274,9 @@ export const PrintersPage = () => {
                       <button
                         type="button"
                         className={styles.actionButton}
-                        onClick={() =>
-                          handleDeletePrinter(printer.printerId)
-                        }
+                        onClick={() => handleDeletePrinter(printer.printerId)}
                       >
-                        Dezaktywuj
+                        Usuń
                       </button>
                     </div>
                   </td>

@@ -29,6 +29,7 @@ const menuItems = [
     groupId: "configuration",
     label: "Konfiguracja",
     pathPrefix: "/configuration",
+
     children: [
       {
         to: "/configuration/printers",
@@ -37,6 +38,7 @@ const menuItems = [
       {
         to: "/configuration/label-templates",
         label: "Szablony etykiet",
+        allowedRoles: ["SuperAdmin", "Admin", "Manager"],
       },
     ],
   },
@@ -152,6 +154,12 @@ export const Sidebar = () => {
       <nav className={styles.nav}>
         {menuItems.filter(canShowItem).map((item) => {
           if (item.children) {
+            const visibleChildren = item.children.filter(canShowItem);
+
+            if (visibleChildren.length === 0) {
+              return null;
+            }
+
             const isGroupActive = location.pathname.startsWith(item.pathPrefix);
             const isGroupOpen = Boolean(openGroups[item.groupId]);
 
@@ -170,7 +178,7 @@ export const Sidebar = () => {
 
                 {isGroupOpen && (
                   <div className={styles.submenu}>
-                    {item.children.map((child) => (
+                    {visibleChildren.map((child) => (
                       <NavLink
                         key={child.to}
                         to={child.to}
