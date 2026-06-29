@@ -19,6 +19,8 @@ import { ConfigurationPage } from "./pages/configuration/ConfigurationPage";
 import { OperationsPage } from "./pages/operations/OperationsPage";
 import { PrintEanPage } from "./pages/operations/print-ean/PrintEanPage";
 
+import { PrintJobsPage } from "./pages/operations/print-jobs/PrintJobsPage";
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -101,6 +103,10 @@ export const router = createBrowserRouter([
           {
             path: "print-ean",
             element: <PrintEanPage />,
+          },
+          {
+            path: "print-jobs",
+            element: <PrintJobsPage />,
           },
         ],
       },
