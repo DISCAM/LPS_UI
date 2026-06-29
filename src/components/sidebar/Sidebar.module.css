@@ -1,6 +1,6 @@
 .sidebar {
-  width: 300px;
-  min-width: 300px;
+  width: 260px;
+  min-width: 260px;
   flex-shrink: 0;
   box-sizing: border-box;
 
@@ -31,10 +31,10 @@
 .link {
   color: white;
   text-decoration: none;
-  padding: 12px 14px;
+  padding: 8px 10px;
   border-radius: 8px;
   opacity: 0.85;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: 1px solid white;
 }
 
@@ -62,11 +62,11 @@
   background: transparent;
   color: white;
   text-decoration: none;
-  padding: 12px 14px;
+  padding: 8px 10px;
   border-radius: 8px;
   opacity: 0.85;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-family: inherit;
 
   display: flex;
@@ -94,6 +94,6 @@
 
 .subLink {
   padding-left: 32px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: none;
 }

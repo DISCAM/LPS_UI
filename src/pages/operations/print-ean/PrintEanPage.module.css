@@ -1,0 +1,211 @@
+.page {
+  padding: 0;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: #666;
+}
+
+.card {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.card h3 {
+  margin: 0 0 16px;
+}
+
+.error {
+  margin: 0 0 20px;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.searchForm {
+  display: flex;
+  gap: 12px;
+}
+
+.searchForm input {
+  flex: 1;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.primaryButton {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0e1d77;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.separator::before,
+.separator::after {
+  flex: 1;
+  height: 1px;
+  background-color: #ddd;
+  content: "";
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field select,
+.field input {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.productDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.detailsItem {
+  display: grid;
+  gap: 4px;
+}
+
+.detailsLabel {
+  color: #666;
+  font-size: 13px;
+}
+
+.detailsValue {
+  font-size: 15px;
+}
+
+.description {
+  margin-top: 20px;
+}
+
+.description p {
+  margin: 6px 0 0;
+}
+
+.warning {
+  margin: 20px 0 0;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #fff7ed;
+  color: #9a3412;
+}
+
+.info {
+  margin: 20px 0 0;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.printFormGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.success {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  background-color: #f0fdf4;
+}
+
+.success h3 {
+  margin: 0 0 8px;
+}
+
+.successMessage {
+  margin: 0 0 16px;
+  color: #166534;
+}
+
+.successActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.secondaryButton {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid #0e1d77;
+  border-radius: 6px;
+  background-color: white;
+  color: #0e1d77;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.secondaryButton:hover {
+  background-color: #eaf0ff;
+}
+
+@media (max-width: 600px) {
+  .searchForm {
+    flex-direction: column;
+  }
+
+  .actions,
+  .successActions {
+    justify-content: stretch;
+  }
+
+  .actions button,
+  .successActions button {
+    width: 100%;
+  }
+}

@@ -49,6 +49,10 @@ const menuItems = [
     pathPrefix: "/operations",
     children: [
       {
+        to: "/operations/print-ean",
+        label: "Wydrukuj Etykietę EAN",
+      },
+      {
         to: "/operations/production-orders",
         label: "Zlecenia produkcyjne",
       },

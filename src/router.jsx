@@ -16,6 +16,9 @@ import { PrintersPage } from "./pages/printers/PrintersPage";
 import { LabelTemplatesPage } from "./pages/label-templates/LabelTemplatesPage";
 import { ConfigurationPage } from "./pages/configuration/ConfigurationPage";
 
+import { OperationsPage } from "./pages/operations/OperationsPage";
+import { PrintEanPage } from "./pages/operations/print-ean/PrintEanPage";
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -84,6 +87,20 @@ export const router = createBrowserRouter([
                 <LabelTemplatesPage />
               </RoleProtectedRoute>
             ),
+          },
+        ],
+      },
+      {
+        path: "operations",
+        element: <OperationsPage />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="print-ean" replace />,
+          },
+          {
+            path: "print-ean",
+            element: <PrintEanPage />,
           },
         ],
       },
