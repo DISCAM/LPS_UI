@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getPrintJobsRequest } from "../../../api/printJobsApi";
 import { formatDate } from "../../../helpers/formatDate";
 import styles from "./PrintJobsPage.module.css";
@@ -19,9 +20,6 @@ const getStatusClassName = (status) => {
 
     case "CANCELLED":
       return styles.statusCancelled;
-
-    case "REPRINTED":
-      return styles.statusReprinted;
 
     default:
       return styles.statusDefault;
@@ -107,13 +105,14 @@ export const PrintJobsPage = () => {
                 <th>Kopie</th>
                 <th>Typ</th>
                 <th>Utworzono</th>
+                <th>Akcje</th>
               </tr>
             </thead>
 
             <tbody>
               {printJobs.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className={styles.emptyState}>
+                  <td colSpan="10" className={styles.emptyState}>
                     Brak zadań wydruku.
                   </td>
                 </tr>
@@ -149,6 +148,15 @@ export const PrintJobsPage = () => {
                     </td>
 
                     <td>{formatDate(printJob.createdAt)}</td>
+
+                    <td>
+                      <Link
+                        className={styles.detailsButton}
+                        to={`/operations/print-jobs/${printJob.printJobId}`}
+                      >
+                        Szczegóły
+                      </Link>
+                    </td>
                   </tr>
                 ))
               )}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getProductsRequest } from "../../../api/productsApi";
 import { getPrintersRequest } from "../../../api/printersApi";
 import { getLabelTemplatesRequest } from "../../../api/labelTemplatesApi";
@@ -12,6 +13,7 @@ const normalizeCode = (value) => {
 };
 
 export const PrintEanPage = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [printers, setPrinters] = useState([]);
   const [labelTemplates, setLabelTemplates] = useState([]);
@@ -475,6 +477,16 @@ export const PrintEanPage = () => {
               onClick={handleNewProduct}
             >
               Nowy produkt
+            </button>
+
+            <button
+              type="button"
+              className={styles.secondaryButton}
+              onClick={() =>
+                navigate(`/operations/print-jobs/${printResult.printJobId}`)
+              }
+            >
+              Zobacz szczegóły zadania
             </button>
           </div>
         </section>

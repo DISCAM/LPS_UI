@@ -20,6 +20,7 @@ import { OperationsPage } from "./pages/operations/OperationsPage";
 import { PrintEanPage } from "./pages/operations/print-ean/PrintEanPage";
 
 import { PrintJobsPage } from "./pages/operations/print-jobs/PrintJobsPage";
+import { PrintJobDetailsPage } from "./pages/operations/printJobsDetails/printJobsDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -107,6 +108,10 @@ export const router = createBrowserRouter([
           {
             path: "print-jobs",
             element: <PrintJobsPage />,
+          },
+          {
+            path: "print-jobs/:printJobId",
+            element: <PrintJobDetailsPage />,
           },
         ],
       },
