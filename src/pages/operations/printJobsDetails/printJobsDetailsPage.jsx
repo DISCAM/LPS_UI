@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { getPrintJobByIdRequest } from "../../../api/printJobsApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  cancelPrintJobRequest,
+  getPrintJobByIdRequest,
+  reprintPrintJobRequest,
+} from "../../../api/printJobsApi";
 import { formatDate } from "../../../helpers/formatDate";
 import styles from "./PrintJobDetailsPage.module.css";
 
@@ -36,10 +40,12 @@ const formatOptionalDate = (value) => {
 
 export const PrintJobDetailsPage = () => {
   const { printJobId } = useParams();
-
+  const navigate = useNavigate();
   const [printJob, setPrintJob] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isReprinting, setIsReprinting] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -72,6 +78,54 @@ export const PrintJobDetailsPage = () => {
     };
   }, [printJobId]);
 
+  const handleCancel = async () => {
+    const confirmed = window.confirm(
+      "Czy na pewno chcesz anulować to zadanie wydruku?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setIsCancelling(true);
+      setError(null);
+
+      await cancelPrintJobRequest(printJobId);
+
+      const updatedPrintJob = await getPrintJobByIdRequest(printJobId);
+
+      setPrintJob(updatedPrintJob);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleReprint = async () => {
+    const confirmed = window.confirm(
+      "Czy na pewno chcesz utworzyć reprint tego zadania?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setIsReprinting(true);
+      setError(null);
+
+      const result = await reprintPrintJobRequest(printJobId);
+
+      navigate(`/operations/print-jobs/${result.printJobId}`);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsReprinting(false);
+    }
+  };
+
   if (isLoading) {
     return <p>Ładowanie szczegółów zadania wydruku...</p>;
   }
@@ -92,6 +146,11 @@ export const PrintJobDetailsPage = () => {
     return null;
   }
 
+  const canBeReprinted =
+    printJob.status === "PRINTED" ||
+    printJob.status === "ERROR" ||
+    printJob.status === "CANCELLED";
+
   const history = printJob.history ?? [];
 
   return (
@@ -102,18 +161,41 @@ export const PrintJobDetailsPage = () => {
 
       <div className={styles.header}>
         <div>
-          <h2>Zadanie wydruku #{printJob.printJobId}</h2>
-
-          <p>Szczegóły zlecenia, dane etykiety oraz historia realizacji.</p>
+          <h2>Szczegóły zadania wydruku #{printJob.printJobId}</h2>
+          <p>Informacje o zleceniu oraz jego historii.</p>
         </div>
 
-        <span
-          className={`${styles.statusBadge} ${getStatusClassName(
-            printJob.status,
-          )}`}
-        >
-          {printJob.status}
-        </span>
+        <div className={styles.headerActions}>
+          <span
+            className={`${styles.statusBadge} ${getStatusClassName(
+              printJob.status,
+            )}`}
+          >
+            {printJob.status}
+          </span>
+
+          {printJob.status === "QUEUED" && (
+            <button
+              type="button"
+              className={styles.cancelButton}
+              onClick={handleCancel}
+              disabled={isCancelling}
+            >
+              {isCancelling ? "Anulowanie..." : "Anuluj zadanie"}
+            </button>
+          )}
+
+          {canBeReprinted && (
+            <button
+              type="button"
+              className={styles.reprintButton}
+              onClick={handleReprint}
+              disabled={isReprinting || isCancelling}
+            >
+              {isReprinting ? "Tworzenie reprintu..." : "Ponów wydruk"}
+            </button>
+          )}
+        </div>
       </div>
 
       {printJob.errorMessage && (

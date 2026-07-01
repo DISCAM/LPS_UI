@@ -39,3 +39,31 @@ export async function getPrintJobByIdRequest(printJobId) {
 
   return response.json();
 }
+
+export async function cancelPrintJobRequest(printJobId) {
+  const response = await fetch(`${API_URL}/print-jobs/${printJobId}/cancel`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(errorText || "Nie udało się anulować zadania wydruku.");
+  }
+}
+
+export async function reprintPrintJobRequest(printJobId) {
+  const response = await fetch(`${API_URL}/print-jobs/${printJobId}/reprint`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(errorText || "Nie udało się utworzyć reprintu.");
+  }
+
+  return response.json();
+}

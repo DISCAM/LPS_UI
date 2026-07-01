@@ -223,6 +223,52 @@
   color: #6c757d;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cancelButton {
+  padding: 8px 12px;
+  border: 1px solid #b42318;
+  border-radius: 6px;
+  background-color: white;
+  color: #b42318;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: #fef2f2;
+}
+
+.cancelButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.reprintButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0e1d77;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.reprintButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.reprintButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 @media (max-width: 700px) {
   .page {
     padding: 16px;
@@ -234,5 +280,8 @@
 
   .grid {
     grid-template-columns: 1fr;
+  }
+  .headerActions {
+    justify-content: flex-start;
   }
 }
