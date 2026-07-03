@@ -4,6 +4,8 @@ import {
   cancelPrintJobRequest,
   getPrintJobByIdRequest,
   reprintPrintJobRequest,
+  executePrintJobRequest,
+  getPrintJobPreviewRequest,
 } from "../../../api/printJobsApi";
 import { formatDate } from "../../../helpers/formatDate";
 import styles from "./PrintJobDetailsPage.module.css";
@@ -46,6 +48,10 @@ export const PrintJobDetailsPage = () => {
   const [error, setError] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isReprinting, setIsReprinting] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(true);
+  const [previewError, setPreviewError] = useState(null);
 
   useEffect(() => {
     let isCancelled = false;
@@ -77,6 +83,68 @@ export const PrintJobDetailsPage = () => {
       isCancelled = true;
     };
   }, [printJobId]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    let objectUrl = null;
+
+    const loadPreview = async () => {
+      try {
+        setIsPreviewLoading(true);
+        setPreviewError(null);
+        setPreviewUrl(null);
+
+        const previewBlob = await getPrintJobPreviewRequest(printJobId);
+
+        objectUrl = URL.createObjectURL(previewBlob);
+
+        if (!isCancelled) {
+          setPreviewUrl(objectUrl);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setPreviewError(error.message);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsPreviewLoading(false);
+        }
+      }
+    };
+
+    loadPreview();
+
+    return () => {
+      isCancelled = true;
+
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [printJobId]);
+
+  const handlePrint = async () => {
+    const confirmed = window.confirm(
+      "Czy na pewno chcesz wysłać etykietę do drukarki?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setIsPrinting(true);
+      setError(null);
+
+      const updatedPrintJob = await executePrintJobRequest(printJobId);
+
+      setPrintJob(updatedPrintJob);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsPrinting(false);
+    }
+  };
 
   const handleCancel = async () => {
     const confirmed = window.confirm(
@@ -146,7 +214,9 @@ export const PrintJobDetailsPage = () => {
     return null;
   }
 
+  const canBePrinted = printJob.status === "QUEUED";
   const canBeReprinted =
+    printJob.status === "SENT" ||
     printJob.status === "PRINTED" ||
     printJob.status === "ERROR" ||
     printJob.status === "CANCELLED";
@@ -174,6 +244,20 @@ export const PrintJobDetailsPage = () => {
             {printJob.status}
           </span>
 
+          {canBePrinted && (
+            <button
+              type="button"
+              className={styles.printButton}
+              onClick={handlePrint}
+              disabled={isPrinting || isCancelling || isReprinting}
+            >
+              {isPrinting
+                ? "Wysyłanie do drukarki..."
+                : printJob.isReprint
+                  ? "Drukuj reprint"
+                  : "Drukuj etykietę"}
+            </button>
+          )}
           {printJob.status === "QUEUED" && (
             <button
               type="button"
@@ -261,26 +345,23 @@ export const PrintJobDetailsPage = () => {
           <h3>Podgląd danych etykiety</h3>
 
           <div className={styles.labelPreview}>
-            <div className={styles.previewHeader}>
-              <span>{printJob.labelType}</span>
-              <strong>{showValue(printJob.templateName)}</strong>
-            </div>
+            {isPreviewLoading && (
+              <p className={styles.previewInfo}>
+                Generowanie podglądu etykiety...
+              </p>
+            )}
 
-            <div className={styles.previewBody}>
-              <strong className={styles.previewProductName}>
-                {showValue(printJob.productName)}
-              </strong>
+            {previewError && (
+              <p className={styles.previewError}>{previewError}</p>
+            )}
 
-              <span>Kod produktu: {showValue(printJob.productCode)}</span>
-
-              <div className={styles.barcodePlaceholder}>
-                <div className={styles.barcodeLines} />
-              </div>
-
-              <strong className={styles.eanValue}>
-                {showValue(printJob.primaryCodeValue)}
-              </strong>
-            </div>
+            {!isPreviewLoading && !previewError && previewUrl && (
+              <img
+                className={styles.previewImage}
+                src={previewUrl}
+                alt={`Podgląd etykiety dla zadania wydruku ${printJob.printJobId}`}
+              />
+            )}
           </div>
 
           <dl className={styles.detailsList}>

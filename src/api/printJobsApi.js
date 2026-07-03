@@ -67,3 +67,33 @@ export async function reprintPrintJobRequest(printJobId) {
 
   return response.json();
 }
+
+export async function executePrintJobRequest(printJobId) {
+  const response = await fetch(`${API_URL}/print-jobs/${printJobId}/print`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(errorText || "Nie udało się przekazać zadania do wydruku.");
+  }
+
+  return response.json();
+}
+
+export async function getPrintJobPreviewRequest(printJobId) {
+  const response = await fetch(`${API_URL}/print-jobs/${printJobId}/preview`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(errorText || "Nie udało się pobrać podglądu etykiety.");
+  }
+
+  return response.blob();
+}

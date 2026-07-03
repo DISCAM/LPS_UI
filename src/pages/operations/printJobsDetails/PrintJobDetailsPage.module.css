@@ -1,5 +1,5 @@
 .page {
-  padding: 0px;
+  padding: 0;
 }
 
 .backButton {
@@ -29,6 +29,14 @@
 .header p {
   margin: 0;
   color: #666;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .grid {
@@ -131,61 +139,37 @@
   margin: 6px 0 0;
 }
 
+/* Prawdziwy podgląd PNG wygenerowany przez NiceLabel */
 .labelPreview {
-  overflow: hidden;
-  margin-bottom: 20px;
-  border: 2px solid #1f2937;
-  border-radius: 6px;
-  background-color: white;
-}
-
-.previewHeader {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border-bottom: 1px solid #d1d5db;
-  background-color: #f8fafc;
-  font-size: 12px;
-}
-
-.previewBody {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 18px;
-  text-align: center;
-}
-
-.previewProductName {
-  font-size: 18px;
-}
-
-.barcodePlaceholder {
-  width: min(100%, 280px);
-  padding: 12px 8px;
+  justify-content: center;
+  min-height: 240px;
+  margin-bottom: 20px;
+  overflow: auto;
+  padding: 16px;
   border: 1px solid #d1d5db;
+  border-radius: 8px;
   background-color: white;
 }
 
-.barcodeLines {
-  height: 54px;
-  background: repeating-linear-gradient(
-    90deg,
-    #111 0,
-    #111 2px,
-    transparent 2px,
-    transparent 4px,
-    #111 4px,
-    #111 5px,
-    transparent 5px,
-    transparent 8px
-  );
+.previewImage {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 }
 
-.eanValue {
-  letter-spacing: 1.5px;
+.previewInfo {
+  margin: 0;
+  color: #6c757d;
+}
+
+.previewError {
+  margin: 0;
+  color: #b42318;
 }
 
 .tableWrapper {
@@ -221,14 +205,6 @@
 .emptyHistory {
   margin: 0;
   color: #6c757d;
-}
-
-.headerActions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .cancelButton {
@@ -269,6 +245,28 @@
   cursor: not-allowed;
 }
 
+.printButton {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0e1d77;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.printButton:hover:not(:disabled) {
+  background-color: #09145c;
+}
+
+.printButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 @media (max-width: 700px) {
   .page {
     padding: 16px;
@@ -278,10 +276,20 @@
     flex-direction: column;
   }
 
+  .headerActions {
+    justify-content: flex-start;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
-  .headerActions {
-    justify-content: flex-start;
+
+  .labelPreview {
+    min-height: 180px;
+    padding: 10px;
+  }
+
+  .previewImage {
+    max-width: none;
   }
 }
