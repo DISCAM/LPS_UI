@@ -164,8 +164,75 @@
   color: #6b7280;
   text-align: center !important;
 }
+.formCard {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.formCard h3 {
+  margin: 0 0 18px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.secondaryButton {
+  padding: 10px 16px;
+  border: 1px solid #0e1d77;
+  border-radius: 6px;
+  background-color: white;
+  color: #0e1d77;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background-color: #eef0ff;
+}
+
+.secondaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
 
 @media (max-width: 700px) {
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .formActions button {
+    width: 100%;
+  }
   .header {
     flex-direction: column;
   }
@@ -174,3 +241,4 @@
     width: 100%;
   }
 }
+

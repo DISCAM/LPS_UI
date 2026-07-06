@@ -44,10 +44,90 @@
   opacity: 0.65;
 }
 
+.secondaryButton {
+  padding: 10px 16px;
+  border: 1px solid #0e1d77;
+  border-radius: 6px;
+  background-color: white;
+  color: #0e1d77;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background-color: #eef0ff;
+}
+
+.secondaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .error {
   margin-bottom: 16px;
   color: #b42318;
 }
+
+/* Formularz nowego zlecenia */
+
+.formCard {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.formCard *,
+.formCard *::before,
+.formCard *::after {
+  box-sizing: border-box;
+}
+
+.formCard h3 {
+  margin: 0 0 18px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.field {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  background-color: white;
+  font: inherit;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Tabela zleceń */
 
 .tableWrapper {
   overflow-x: auto;
@@ -144,6 +224,22 @@
   }
 
   .headerActions {
+    width: 100%;
+  }
+
+  .headerActions button {
+    flex: 1;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .formActions button {
     width: 100%;
   }
 }
