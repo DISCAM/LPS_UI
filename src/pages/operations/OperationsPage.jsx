@@ -10,14 +10,7 @@ const operationsLinks = [
     to: "/operations/production-orders",
     title: "Zlecenia produkcyjne",
   },
-  {
-    to: "/operations/production-lots",
-    title: "Partie produkcyjne",
-  },
-  {
-    to: "/operations/logistic-units",
-    title: "Jednostki logistyczne",
-  },
+
   {
     to: "/operations/warehouse-orders",
     title: "Zlecenia magazynowe",

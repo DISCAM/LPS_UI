@@ -56,14 +56,7 @@ const menuItems = [
         to: "/operations/production-orders",
         label: "Zlecenia produkcyjne",
       },
-      {
-        to: "/operations/production-lots",
-        label: "Partie produkcyjne",
-      },
-      {
-        to: "/operations/logistic-units",
-        label: "Jednostki logistyczne",
-      },
+
       {
         to: "/operations/warehouse-orders",
         label: "Zlecenia magazynowe",

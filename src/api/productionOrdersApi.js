@@ -9,36 +9,35 @@ function getAuthHeaders() {
   };
 }
 
-export async function printEanRequest(printEanData) {
-  const response = await fetch(`${API_URL}/print-ean`, {
-    method: "POST",
+export async function getProductionOrdersRequest() {
+  const response = await fetch(`${API_URL}/production-orders`, {
+    method: "GET",
     headers: getAuthHeaders(),
-    body: JSON.stringify(printEanData),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Nie udało się utworzyć zadania wydruku EAN");
-  }
-
-  return response.json();
-}
-
-
-export async function printProductionLabelRequest(printData) {
-  const response = await fetch(`${API_URL}/print-production-label`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(printData),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
 
     throw new Error(
-      errorText ||
-        "Nie udało się utworzyć zadania wydruku etykiety produkcyjnej.",
+      errorText || "Nie udało się pobrać zleceń produkcyjnych.",
+    );
+  }
+
+  return response.json();
+}
+
+export async function createProductionOrderRequest(productionOrderData) {
+  const response = await fetch(`${API_URL}/production-orders`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(productionOrderData),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(
+      errorText || "Nie udało się utworzyć zlecenia produkcyjnego.",
     );
   }
 

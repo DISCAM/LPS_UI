@@ -22,6 +22,9 @@ import { PrintEanPage } from "./pages/operations/print-ean/PrintEanPage";
 import { PrintJobsPage } from "./pages/operations/print-jobs/PrintJobsPage";
 import { PrintJobDetailsPage } from "./pages/operations/printJobsDetails/printJobsDetailsPage";
 
+import { ProductionOrdersPage } from "./pages/operations/production-orders/ProductionOrdersPage";
+import { ProductionOrderLotsPage } from "./pages/operations/production-order-lots/ProductionOrderLotsPage";
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -112,6 +115,14 @@ export const router = createBrowserRouter([
           {
             path: "print-jobs/:printJobId",
             element: <PrintJobDetailsPage />,
+          },
+          {
+            path: "production-orders",
+            element: <ProductionOrdersPage />,
+          },
+          {
+            path: "production-orders/:productionOrderId/lots",
+            element: <ProductionOrderLotsPage />,
           },
         ],
       },
