@@ -32,12 +32,34 @@ const getStatusClassName = (status) => {
   }
 };
 
+//const showValue = (value) => {
+//  return value || "—";
+//};
+
 const showValue = (value) => {
-  return value || "—";
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+
+  return value;
 };
 
 const formatOptionalDate = (value) => {
   return value ? formatDate(value) : "—";
+};
+
+const formatOptionalDateOnly = (value) => {
+  if (!value) {
+    return "—";
+  }
+
+  const [year, month, day] = String(value).split("-");
+
+  if (!year || !month || !day) {
+    return value;
+  }
+
+  return `${day}.${month}.${year}`;
 };
 
 export const PrintJobDetailsPage = () => {
@@ -223,6 +245,10 @@ export const PrintJobDetailsPage = () => {
 
   const history = printJob.history ?? [];
 
+  const labelData = printJob.labelData ?? {};
+
+  const isProductionLabel = printJob.labelType === "PRODUCTION";
+
   return (
     <section className={styles.page}>
       <Link className={styles.backButton} to="/operations/print-jobs">
@@ -396,6 +422,59 @@ export const PrintJobDetailsPage = () => {
             </div>
           </dl>
         </section>
+
+        {isProductionLabel && (
+          <section className={styles.card}>
+            <h3>Dane produkcyjne</h3>
+
+            <dl className={styles.detailsList}>
+              <div>
+                <dt>Zlecenie produkcyjne</dt>
+                <dd>{showValue(labelData.productionOrderNumber)}</dd>
+              </div>
+
+              <div>
+                <dt>Numer LOT</dt>
+                <dd>{showValue(labelData.lotNumber)}</dd>
+              </div>
+
+              <div>
+                <dt>Data produkcji</dt>
+                <dd>{formatOptionalDateOnly(labelData.productionDate)}</dd>
+              </div>
+
+              <div>
+                <dt>Data ważności</dt>
+                <dd>{formatOptionalDateOnly(labelData.expirationDate)}</dd>
+              </div>
+
+              <div>
+                <dt>Linia produkcyjna</dt>
+                <dd>{showValue(labelData.productionLine)}</dd>
+              </div>
+
+              <div>
+                <dt>Zmiana</dt>
+                <dd>{showValue(labelData.shiftCode)}</dd>
+              </div>
+
+              <div>
+                <dt>Ilość wyprodukowana</dt>
+                <dd>{showValue(labelData.producedQuantity)}</dd>
+              </div>
+
+              <div>
+                <dt>ID partii produkcyjnej</dt>
+                <dd>{showValue(labelData.productionLotId)}</dd>
+              </div>
+
+              <div>
+                <dt>ID zlecenia produkcyjnego</dt>
+                <dd>{showValue(labelData.productionOrderId)}</dd>
+              </div>
+            </dl>
+          </section>
+        )}
       </div>
 
       <section className={styles.card}>
