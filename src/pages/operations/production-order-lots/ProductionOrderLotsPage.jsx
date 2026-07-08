@@ -1,37 +1,101 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   createProductionLotRequest,
   getProductionLotsRequest,
 } from "../../../api/productionLotsApi";
+import { getPrintersRequest } from "../../../api/printersApi";
+import { getLabelTemplatesRequest } from "../../../api/labelTemplatesApi";
+import { printProductionLabelRequest } from "../../../api/printLabelsApi";
 import { formatDate } from "../../../helpers/formatDate";
 import styles from "./ProductionOrderLotsPage.module.css";
 
-export const ProductionOrderLotsPage = () => {
-  const { productionOrderId } = useParams();
-
-  const [productionLots, setProductionLots] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState(null);
-
-  const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-
-  const [createForm, setCreateForm] = useState({
+const getInitialCreateForm = () => {
+  return {
     lotNumber: "",
     productionDate: "",
     expirationDate: "",
     productionLine: "",
     shiftCode: "",
     producedQuantity: "",
-  });
+  };
+};
+
+const getInitialPrintForm = () => {
+  return {
+    labelTemplateId: "",
+    printerId: "",
+    copies: "1",
+  };
+};
+
+export const ProductionOrderLotsPage = () => {
+  const { productionOrderId } = useParams();
+  const navigate = useNavigate();
+
+  const [productionLots, setProductionLots] = useState([]);
+  const [printers, setPrinters] = useState([]);
+  const [labelTemplates, setLabelTemplates] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  const [selectedPrintLot, setSelectedPrintLot] = useState(null);
+  const [error, setError] = useState(null);
+
+  const [createForm, setCreateForm] = useState(getInitialCreateForm);
+  const [printForm, setPrintForm] = useState(getInitialPrintForm);
 
   const loadProductionLots = useCallback(async () => {
     const data = await getProductionLotsRequest(productionOrderId);
 
     setProductionLots(data);
   }, [productionOrderId]);
+
+  const loadInitialData = useCallback(async () => {
+    const [productionLotsData, printersData, labelTemplatesData] =
+      await Promise.all([
+        getProductionLotsRequest(productionOrderId),
+        getPrintersRequest(),
+        getLabelTemplatesRequest(),
+      ]);
+
+    setProductionLots(productionLotsData);
+    setPrinters(printersData);
+    setLabelTemplates(labelTemplatesData);
+
+    const activeProductionTemplates = labelTemplatesData.filter(
+      (template) => template.isActive && template.labelType === "PRODUCTION",
+    );
+
+    const defaultTemplate =
+      activeProductionTemplates.find((template) => template.isDefault) ??
+      activeProductionTemplates[0];
+
+    setPrintForm((prev) => ({
+      ...prev,
+      labelTemplateId: defaultTemplate ? String(defaultTemplate.id) : "",
+    }));
+  }, [productionOrderId]);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        setError(null);
+
+        await loadInitialData();
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    init();
+  }, [loadInitialData]);
 
   const handleRefresh = async () => {
     try {
@@ -61,14 +125,7 @@ export const ProductionOrderLotsPage = () => {
     setIsCreateFormVisible(false);
     setError(null);
 
-    setCreateForm({
-      lotNumber: "",
-      productionDate: "",
-      expirationDate: "",
-      productionLine: "",
-      shiftCode: "",
-      producedQuantity: "",
-    });
+    setCreateForm(getInitialCreateForm());
   };
 
   const handleCreateLotSubmit = async (event) => {
@@ -124,27 +181,96 @@ export const ProductionOrderLotsPage = () => {
     }
   };
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        setError(null);
+  const handlePrintFormChange = (event) => {
+    const { name, value } = event.target;
 
-        await loadProductionLots();
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    setPrintForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-    init();
-  }, [loadProductionLots]);
+    setError(null);
+  };
+
+  const handleStartPrint = (productionLot) => {
+    setSelectedPrintLot(productionLot);
+    setError(null);
+
+    setPrintForm((prev) => ({
+      ...prev,
+      copies: "1",
+    }));
+  };
+
+  const handleCancelPrint = () => {
+    setSelectedPrintLot(null);
+    setError(null);
+
+    setPrintForm((prev) => ({
+      ...prev,
+      copies: "1",
+    }));
+  };
+
+  const handlePrintSubmit = async (event) => {
+    event.preventDefault();
+
+    const labelTemplateId = Number(printForm.labelTemplateId);
+    const printerId = Number(printForm.printerId);
+    const copies = Number(printForm.copies);
+
+    if (!selectedPrintLot) {
+      setError("Wybierz partię LOT do wydruku.");
+      return;
+    }
+
+    if (!Number.isInteger(labelTemplateId) || labelTemplateId < 1) {
+      setError("Wybierz poprawny szablon etykiety.");
+      return;
+    }
+
+    if (!Number.isInteger(printerId) || printerId < 1) {
+      setError("Wybierz poprawną drukarkę.");
+      return;
+    }
+
+    if (!Number.isInteger(copies) || copies < 1 || copies > 1000) {
+      setError("Liczba kopii musi być w zakresie od 1 do 1000.");
+      return;
+    }
+
+    try {
+      setIsPrinting(true);
+      setError(null);
+
+      const printData = {
+        productionLotId: selectedPrintLot.productionLotId,
+        labelTemplateId,
+        printerId,
+        copies,
+      };
+
+      const result = await printProductionLabelRequest(printData);
+
+      navigate(`/operations/print-jobs/${result.printJobId}`);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsPrinting(false);
+    }
+  };
 
   if (isLoading) {
     return <p>Ładowanie partii produkcyjnych...</p>;
   }
 
   const firstProductionLot = productionLots[0];
+
+  const activePrinters = printers.filter((printer) => printer.isActive);
+
+  const activeProductionTemplates = labelTemplates.filter(
+    (template) => template.isActive && template.labelType === "PRODUCTION",
+  );
 
   return (
     <section className={styles.page}>
@@ -168,7 +294,7 @@ export const ProductionOrderLotsPage = () => {
             type="button"
             className={styles.primaryButton}
             onClick={handleRefresh}
-            disabled={isRefreshing}
+            disabled={isRefreshing || isCreating || isPrinting}
           >
             {isRefreshing ? "Odświeżanie..." : "Odśwież"}
           </button>
@@ -180,7 +306,7 @@ export const ProductionOrderLotsPage = () => {
               setIsCreateFormVisible((prev) => !prev);
               setError(null);
             }}
-            disabled={isCreating}
+            disabled={isCreating || isPrinting}
           >
             {isCreateFormVisible ? "Zamknij formularz" : "Nowy LOT"}
           </button>
@@ -321,79 +447,197 @@ export const ProductionOrderLotsPage = () => {
         </form>
       )}
 
-      {!error && (
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID LOT-u</th>
-                <th>Numer LOT</th>
-                <th>Data produkcji</th>
-                <th>Data ważności</th>
-                <th>Linia</th>
-                <th>Zmiana</th>
-                <th>Ilość wyprodukowana</th>
-                <th>Status</th>
-                <th>Utworzono</th>
-                <th>Akcje</th>
-              </tr>
-            </thead>
+      {selectedPrintLot && (
+        <form onSubmit={handlePrintSubmit} className={styles.formCard}>
+          <h3>Wydruk etykiety produkcyjnej</h3>
 
-            <tbody>
-              {productionLots.length === 0 ? (
-                <tr>
-                  <td colSpan="10" className={styles.emptyState}>
-                    Brak partii LOT dla tego zlecenia.
+          <section className={styles.selectedLotInfo}>
+            <div>
+              <span>Numer LOT</span>
+              <strong className={styles.codeValue}>
+                {selectedPrintLot.lotNumber}
+              </strong>
+            </div>
+
+            <div>
+              <span>Data produkcji</span>
+              <strong>{formatDate(selectedPrintLot.productionDate)}</strong>
+            </div>
+
+            <div>
+              <span>Ilość</span>
+              <strong>{selectedPrintLot.producedQuantity}</strong>
+            </div>
+
+            <div>
+              <span>Produkt</span>
+              <strong>{selectedPrintLot.productName}</strong>
+            </div>
+          </section>
+
+          <div className={styles.formGrid}>
+            <div className={styles.field}>
+              <label htmlFor="labelTemplateId">Szablon etykiety</label>
+
+              <select
+                id="labelTemplateId"
+                name="labelTemplateId"
+                value={printForm.labelTemplateId}
+                onChange={handlePrintFormChange}
+                required
+              >
+                <option value="">-- wybierz szablon --</option>
+
+                {activeProductionTemplates.map((template) => (
+                  <option key={template.id} value={template.id}>
+                    {template.name}
+                    {template.isDefault ? " (domyślny)" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="printerId">Drukarka</label>
+
+              <select
+                id="printerId"
+                name="printerId"
+                value={printForm.printerId}
+                onChange={handlePrintFormChange}
+                required
+              >
+                <option value="">-- wybierz drukarkę --</option>
+
+                {activePrinters.map((printer) => (
+                  <option key={printer.printerId} value={printer.printerId}>
+                    {printer.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="copies">Liczba kopii</label>
+
+              <input
+                id="copies"
+                name="copies"
+                type="number"
+                min="1"
+                max="1000"
+                value={printForm.copies}
+                onChange={handlePrintFormChange}
+                required
+              />
+            </div>
+          </div>
+
+          {activeProductionTemplates.length === 0 && (
+            <p className={styles.warning}>
+              Brak aktywnego szablonu etykiety typu PRODUCTION.
+            </p>
+          )}
+
+          <div className={styles.formActions}>
+            <button
+              type="button"
+              className={styles.secondaryButton}
+              onClick={handleCancelPrint}
+              disabled={isPrinting}
+            >
+              Anuluj
+            </button>
+
+            <button
+              type="submit"
+              className={styles.primaryButton}
+              disabled={
+                isPrinting ||
+                activeProductionTemplates.length === 0 ||
+                !printForm.labelTemplateId ||
+                !printForm.printerId
+              }
+            >
+              {isPrinting
+                ? "Tworzenie zadania wydruku..."
+                : "Utwórz zadanie wydruku"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID LOT-u</th>
+              <th>Numer LOT</th>
+              <th>Data produkcji</th>
+              <th>Data ważności</th>
+              <th>Linia</th>
+              <th>Zmiana</th>
+              <th>Ilość wyprodukowana</th>
+              <th>Status</th>
+              <th>Utworzono</th>
+              <th>Akcje</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {productionLots.length === 0 ? (
+              <tr>
+                <td colSpan="10" className={styles.emptyState}>
+                  Brak partii LOT dla tego zlecenia.
+                </td>
+              </tr>
+            ) : (
+              productionLots.map((productionLot) => (
+                <tr key={productionLot.productionLotId}>
+                  <td>{productionLot.productionLotId}</td>
+
+                  <td className={styles.codeCell}>
+                    {productionLot.lotNumber}
+                  </td>
+
+                  <td>{formatDate(productionLot.productionDate)}</td>
+
+                  <td>
+                    {productionLot.expirationDate
+                      ? formatDate(productionLot.expirationDate)
+                      : "—"}
+                  </td>
+
+                  <td>{productionLot.productionLine ?? "—"}</td>
+
+                  <td>{productionLot.shiftCode ?? "—"}</td>
+
+                  <td>{productionLot.producedQuantity}</td>
+
+                  <td>
+                    <span className={styles.statusBadge}>
+                      {productionLot.status}
+                    </span>
+                  </td>
+
+                  <td>{formatDate(productionLot.createdAt)}</td>
+
+                  <td>
+                    <button
+                      type="button"
+                      className={styles.printButton}
+                      onClick={() => handleStartPrint(productionLot)}
+                      disabled={isPrinting}
+                    >
+                      Drukuj etykietę
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                productionLots.map((productionLot) => (
-                  <tr key={productionLot.productionLotId}>
-                    <td>{productionLot.productionLotId}</td>
-
-                    <td className={styles.codeCell}>
-                      {productionLot.lotNumber}
-                    </td>
-
-                    <td>{formatDate(productionLot.productionDate)}</td>
-
-                    <td>
-                      {productionLot.expirationDate
-                        ? formatDate(productionLot.expirationDate)
-                        : "—"}
-                    </td>
-
-                    <td>{productionLot.productionLine ?? "—"}</td>
-
-                    <td>{productionLot.shiftCode ?? "—"}</td>
-
-                    <td>{productionLot.producedQuantity}</td>
-
-                    <td>
-                      <span className={styles.statusBadge}>
-                        {productionLot.status}
-                      </span>
-                    </td>
-
-                    <td>{formatDate(productionLot.createdAt)}</td>
-
-                    <td>
-                      <button
-                        type="button"
-                        className={styles.printButton}
-                        disabled
-                        title="Wydruk etykiety dodamy w kolejnym kroku."
-                      >
-                        Drukuj etykietę
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 };

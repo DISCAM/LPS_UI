@@ -172,6 +172,12 @@
   background-color: white;
 }
 
+.formCard *,
+.formCard *::before,
+.formCard *::after {
+  box-sizing: border-box;
+}
+
 .formCard h3 {
   margin: 0 0 18px;
 }
@@ -191,14 +197,19 @@
   font-weight: 600;
 }
 
-.field input {
+.field input,
+.field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 40px;
   padding: 8px 10px;
   border: 1px solid #cfcfcf;
   border-radius: 6px;
+  background-color: white;
   font: inherit;
 }
-
 .formActions {
   display: flex;
   justify-content: flex-end;
@@ -225,6 +236,40 @@
   opacity: 0.65;
 }
 
+.selectedLotInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  background-color: #f8fafc;
+}
+
+.selectedLotInfo div {
+  display: grid;
+  gap: 5px;
+}
+
+.selectedLotInfo span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.warning {
+  margin: 16px 0 0;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #fff7ed;
+  color: #9a3412;
+}
+
+.printButton:hover:not(:disabled) {
+  background-color: #0e1d77;
+  color: white;
+}
+
 @media (max-width: 700px) {
   .formActions {
     flex-direction: column-reverse;
@@ -241,4 +286,3 @@
     width: 100%;
   }
 }
-
