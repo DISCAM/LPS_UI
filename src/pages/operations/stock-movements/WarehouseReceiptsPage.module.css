@@ -1,0 +1,261 @@
+.page {
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0 0 6px;
+}
+
+.header p {
+  margin: 0;
+  color: #666;
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.primaryButton {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0e1d77;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background-color: #091556;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.cancelButton {
+  padding: 10px 16px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background-color: #f3f4f6;
+}
+
+.cancelButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.error {
+  margin-bottom: 16px;
+  color: #b42318;
+}
+
+.success {
+  margin-bottom: 16px;
+  color: #027a48;
+  font-weight: 600;
+}
+
+.formCard {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.formCard *,
+.formCard *::before,
+.formCard *::after {
+  box-sizing: border-box;
+}
+
+.formCard h3 {
+  margin: 0 0 18px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.field,
+.fieldWide {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.fieldWide {
+  grid-column: span 2;
+}
+
+.field label,
+.fieldWide label {
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.fieldWide input,
+.fieldWide select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  background-color: white;
+  font: inherit;
+}
+
+.field input:disabled,
+.field select:disabled,
+.fieldWide input:disabled,
+.fieldWide select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.lotInfo {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f6f8fa;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid #e1e5ea;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.table {
+  width: 100%;
+  min-width: 1250px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e7e9ed;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: #f6f8fa;
+  color: #303846;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.table tbody tr:hover {
+  background-color: #fafbfc;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.movementType {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background-color: #edf2f7;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.productCode {
+  display: block;
+  margin-top: 3px;
+  color: #6b7280;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.smallText {
+  display: block;
+  margin-top: 3px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.codeCell {
+  font-family: monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.emptyState {
+  padding: 32px;
+  color: #6b7280;
+  text-align: center !important;
+}
+
+@media (max-width: 700px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .headerActions {
+    width: 100%;
+  }
+
+  .headerActions button {
+    flex: 1;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldWide {
+    grid-column: span 1;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .formActions button {
+    width: 100%;
+  }
+}

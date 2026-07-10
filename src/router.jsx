@@ -25,6 +25,8 @@ import { PrintJobDetailsPage } from "./pages/operations/printJobsDetails/printJo
 import { ProductionOrdersPage } from "./pages/operations/production-orders/ProductionOrdersPage";
 import { ProductionOrderLotsPage } from "./pages/operations/production-order-lots/ProductionOrderLotsPage";
 
+import { WarehouseReceiptsPage } from "./pages/operations/stock-movements/WarehouseReceiptsPage";
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -111,6 +113,10 @@ export const router = createBrowserRouter([
           {
             path: "print-jobs",
             element: <PrintJobsPage />,
+          },
+          {
+            path: "warehouse-receipts",
+            element: <WarehouseReceiptsPage />,
           },
           {
             path: "print-jobs/:printJobId",

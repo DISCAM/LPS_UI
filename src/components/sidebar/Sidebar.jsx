@@ -56,7 +56,10 @@ const menuItems = [
         to: "/operations/production-orders",
         label: "Zlecenia produkcyjne",
       },
-
+      {
+        to: "/operations/warehouse-receipts",
+        label: "Przyjęcia z produkcji",
+      },
       {
         to: "/operations/warehouse-orders",
         label: "Zlecenia magazynowe",
