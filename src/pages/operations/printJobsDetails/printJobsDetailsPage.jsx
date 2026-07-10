@@ -62,6 +62,17 @@ const formatOptionalDateOnly = (value) => {
   return `${day}.${month}.${year}`;
 };
 
+const formatQuantity = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+
+  return Number(value).toLocaleString("pl-PL", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 3,
+  });
+};
+
 export const PrintJobDetailsPage = () => {
   const { printJobId } = useParams();
   const navigate = useNavigate();
@@ -248,6 +259,8 @@ export const PrintJobDetailsPage = () => {
   const labelData = printJob.labelData ?? {};
 
   const isProductionLabel = printJob.labelType === "PRODUCTION";
+
+  const isLogisticLabel = printJob.labelType === "LOGISTIC";
 
   return (
     <section className={styles.page}>
@@ -471,6 +484,54 @@ export const PrintJobDetailsPage = () => {
               <div>
                 <dt>ID zlecenia produkcyjnego</dt>
                 <dd>{showValue(labelData.productionOrderId)}</dd>
+              </div>
+            </dl>
+          </section>
+        )}
+
+        {isLogisticLabel && (
+          <section className={styles.card}>
+            <h3>Dane logistyczne</h3>
+
+            <dl className={styles.detailsList}>
+              <div>
+                <dt>SSCC</dt>
+                <dd>{showValue(labelData.sscc)}</dd>
+              </div>
+
+              <div>
+                <dt>Typ jednostki</dt>
+                <dd>{showValue(labelData.unitType)}</dd>
+              </div>
+
+              <div>
+                <dt>Numer LOT</dt>
+                <dd>{showValue(labelData.lotNumber)}</dd>
+              </div>
+
+              <div>
+                <dt>Data produkcji</dt>
+                <dd>{formatOptionalDateOnly(labelData.productionDate)}</dd>
+              </div>
+
+              <div>
+                <dt>Data ważności</dt>
+                <dd>{formatOptionalDateOnly(labelData.expirationDate)}</dd>
+              </div>
+
+              <div>
+                <dt>Ilość na jednostce</dt>
+                <dd>{formatQuantity(labelData.quantity)}</dd>
+              </div>
+
+              <div>
+                <dt>ID jednostki logistycznej</dt>
+                <dd>{showValue(labelData.logisticUnitId)}</dd>
+              </div>
+
+              <div>
+                <dt>ID partii produkcyjnej</dt>
+                <dd>{showValue(labelData.productionLotId)}</dd>
               </div>
             </dl>
           </section>
