@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getLabelTemplatesRequest } from "../../../api/labelTemplatesApi";
+import { getPrintersRequest } from "../../../api/printersApi";
 import { getProductionOrdersRequest } from "../../../api/productionOrdersApi";
 import { getProductionLotsRequest } from "../../../api/productionLotsApi";
 import { getStockMovementsRequest } from "../../../api/stockMovementsApi";
@@ -13,6 +16,9 @@ const getInitialForm = () => ({
   productionLotId: "",
   quantity: "",
   unitType: "PALLET",
+  labelTemplateId: "",
+  printerId: "",
+  copies: 1,
   notes: "",
 });
 
@@ -96,10 +102,20 @@ const getAvailableQuantity = (productionLot, warehouseReceipts) => {
   return producedQuantity - alreadyReceivedQuantity;
 };
 
+const getLabelTemplateId = (labelTemplate) => {
+  return labelTemplate.labelTemplateId ?? labelTemplate.id;
+};
+
+const getPrinterId = (printer) => {
+  return printer.printerId ?? printer.id;
+};
+
 export const WarehouseReceiptsPage = () => {
   const [warehouseReceipts, setWarehouseReceipts] = useState([]);
   const [productionOrders, setProductionOrders] = useState([]);
   const [productionLots, setProductionLots] = useState([]);
+  const [printers, setPrinters] = useState([]);
+  const [labelTemplates, setLabelTemplates] = useState([]);
 
   const [form, setForm] = useState(getInitialForm);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -111,6 +127,14 @@ export const WarehouseReceiptsPage = () => {
 
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [createdPrintJobId, setCreatedPrintJobId] = useState(null);
+
+  const activePrinters = printers.filter((printer) => printer.isActive);
+
+  const activeLogisticTemplates = labelTemplates.filter(
+    (labelTemplate) =>
+      labelTemplate.isActive && labelTemplate.labelType === "LOGISTIC",
+  );
 
   const selectedProductionLot = productionLots.find(
     (productionLot) =>
@@ -127,14 +151,48 @@ export const WarehouseReceiptsPage = () => {
 
     const loadInitialData = async () => {
       try {
-        const [stockMovementsData, productionOrdersData] = await Promise.all([
+        const [
+          stockMovementsData,
+          productionOrdersData,
+          printersData,
+          labelTemplatesData,
+        ] = await Promise.all([
           getStockMovementsRequest(),
           getProductionOrdersRequest(),
+          getPrintersRequest(),
+          getLabelTemplatesRequest(),
         ]);
+
+        const logisticTemplates = labelTemplatesData.filter(
+          (labelTemplate) =>
+            labelTemplate.isActive && labelTemplate.labelType === "LOGISTIC",
+        );
+
+        const defaultLogisticTemplate =
+          logisticTemplates.find((labelTemplate) => labelTemplate.isDefault) ??
+          logisticTemplates[0];
+
+        const activePrintersData = printersData.filter(
+          (printer) => printer.isActive,
+        );
+
+        const defaultPrinter = activePrintersData[0];
 
         if (!isCancelled) {
           setWarehouseReceipts(getWarehouseReceipts(stockMovementsData));
           setProductionOrders(productionOrdersData);
+          setPrinters(printersData);
+          setLabelTemplates(labelTemplatesData);
+
+          setForm((prev) => ({
+            ...prev,
+            labelTemplateId: defaultLogisticTemplate
+              ? String(getLabelTemplateId(defaultLogisticTemplate))
+              : "",
+            printerId: defaultPrinter
+              ? String(getPrinterId(defaultPrinter))
+              : "",
+          }));
         }
       } catch (error) {
         if (!isCancelled) {
@@ -165,6 +223,7 @@ export const WarehouseReceiptsPage = () => {
       setIsRefreshing(true);
       setError(null);
       setSuccessMessage(null);
+      setCreatedPrintJobId(null);
 
       await loadWarehouseReceipts();
     } catch (error) {
@@ -178,14 +237,21 @@ export const WarehouseReceiptsPage = () => {
     setIsFormVisible((prev) => !prev);
     setError(null);
     setSuccessMessage(null);
+    setCreatedPrintJobId(null);
   };
 
   const handleCancelForm = () => {
-    setForm(getInitialForm());
+    setForm((prev) => ({
+      ...getInitialForm(),
+      labelTemplateId: prev.labelTemplateId,
+      printerId: prev.printerId,
+    }));
+
     setProductionLots([]);
     setIsFormVisible(false);
     setError(null);
     setSuccessMessage(null);
+    setCreatedPrintJobId(null);
   };
 
   const handleProductionOrderChange = async (event) => {
@@ -201,6 +267,7 @@ export const WarehouseReceiptsPage = () => {
     setProductionLots([]);
     setError(null);
     setSuccessMessage(null);
+    setCreatedPrintJobId(null);
 
     if (!productionOrderId) {
       return;
@@ -240,6 +307,7 @@ export const WarehouseReceiptsPage = () => {
 
     setError(null);
     setSuccessMessage(null);
+    setCreatedPrintJobId(null);
   };
 
   const handleFormChange = (event) => {
@@ -252,6 +320,7 @@ export const WarehouseReceiptsPage = () => {
 
     setError(null);
     setSuccessMessage(null);
+    setCreatedPrintJobId(null);
   };
 
   const handleSubmit = async (event) => {
@@ -259,8 +328,11 @@ export const WarehouseReceiptsPage = () => {
 
     const productionLotId = Number(form.productionLotId);
     const quantity = Number(form.quantity);
+    const labelTemplateId = Number(form.labelTemplateId);
+    const printerId = Number(form.printerId);
+    const copies = Number(form.copies);
 
-    if (!productionLotId) {
+    if (!productionLotId || productionLotId <= 0) {
       setError("Wybierz partię produkcyjną.");
       return;
     }
@@ -281,24 +353,51 @@ export const WarehouseReceiptsPage = () => {
       return;
     }
 
+    if (!Number.isInteger(labelTemplateId) || labelTemplateId <= 0) {
+      setError("Wybierz szablon etykiety logistycznej.");
+      return;
+    }
+
+    if (!Number.isInteger(printerId) || printerId <= 0) {
+      setError("Wybierz drukarkę.");
+      return;
+    }
+
+    if (!Number.isInteger(copies) || copies <= 0) {
+      setError("Liczba kopii musi być większa od 0.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       setError(null);
       setSuccessMessage(null);
+      setCreatedPrintJobId(null);
 
-      await createWarehouseReceiptRequest({
+      const result = await createWarehouseReceiptRequest({
         productionLotId,
         quantity,
         unitType: form.unitType,
         notes: form.notes.trim() || null,
+        labelTemplateId,
+        printerId,
+        copies,
       });
 
       await loadWarehouseReceipts();
 
-      setForm(getInitialForm());
+      setForm((prev) => ({
+        ...getInitialForm(),
+        labelTemplateId: prev.labelTemplateId,
+        printerId: prev.printerId,
+      }));
+
       setProductionLots([]);
       setIsFormVisible(false);
-      setSuccessMessage("Przyjęcie z produkcji zostało utworzone.");
+      setCreatedPrintJobId(result.printJobId);
+      setSuccessMessage(
+        `Przyjęcie z produkcji zostało utworzone. Utworzono zadanie wydruku #${result.printJobId}.`,
+      );
     } catch (error) {
       setError(error.message);
     } finally {
@@ -343,7 +442,16 @@ export const WarehouseReceiptsPage = () => {
 
       {error && <p className={styles.error}>{error}</p>}
 
-      {successMessage && <p className={styles.success}>{successMessage}</p>}
+      {successMessage && (
+        <p className={styles.success}>
+          {successMessage}{" "}
+          {createdPrintJobId && (
+            <Link to={`/operations/print-jobs/${createdPrintJobId}`}>
+              Zobacz szczegóły wydruku
+            </Link>
+          )}
+        </p>
+      )}
 
       {isFormVisible && (
         <form className={styles.formCard} onSubmit={handleSubmit}>
@@ -440,6 +548,73 @@ export const WarehouseReceiptsPage = () => {
               </select>
             </div>
 
+            <div className={styles.field}>
+              <label htmlFor="labelTemplateId">Szablon etykiety</label>
+
+              <select
+                id="labelTemplateId"
+                name="labelTemplateId"
+                value={form.labelTemplateId}
+                onChange={handleFormChange}
+                required
+              >
+                <option value="">-- wybierz szablon --</option>
+
+                {activeLogisticTemplates.map((labelTemplate) => {
+                  const labelTemplateId = getLabelTemplateId(labelTemplate);
+
+                  return (
+                    <option
+                      key={labelTemplateId}
+                      value={String(labelTemplateId)}
+                    >
+                      {labelTemplate.name} v{labelTemplate.versionNo}
+                      {labelTemplate.isDefault ? " — domyślny" : ""}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="printerId">Drukarka</label>
+
+              <select
+                id="printerId"
+                name="printerId"
+                value={form.printerId}
+                onChange={handleFormChange}
+                required
+              >
+                <option value="">-- wybierz drukarkę --</option>
+
+                {activePrinters.map((printer) => {
+                  const printerId = getPrinterId(printer);
+
+                  return (
+                    <option key={printerId} value={String(printerId)}>
+                      {printer.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="copies">Liczba kopii</label>
+
+              <input
+                id="copies"
+                name="copies"
+                type="number"
+                min="1"
+                max="999"
+                value={form.copies}
+                onChange={handleFormChange}
+                required
+              />
+            </div>
+
             <div className={styles.fieldWide}>
               <label htmlFor="notes">Uwagi</label>
 
@@ -479,7 +654,7 @@ export const WarehouseReceiptsPage = () => {
               className={styles.primaryButton}
               disabled={isSubmitting || isLotsLoading}
             >
-              {isSubmitting ? "Przyjmowanie..." : "Przyjmij na magazyn"}
+              {isSubmitting ? "Przyjmowanie..." : "Przyjmij i utwórz wydruk"}
             </button>
           </div>
         </form>
