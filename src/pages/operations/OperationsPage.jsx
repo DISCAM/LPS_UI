@@ -19,6 +19,10 @@ const operationsLinks = [
     title: "Zlecenia magazynowe",
   },
   {
+    to: "/operations/logistic-units",
+    title: "Jednostki logistyczne",
+  },
+  {
     to: "/operations/print-jobs",
     title: "Wydruki",
   },

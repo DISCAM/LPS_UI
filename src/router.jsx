@@ -26,6 +26,7 @@ import { ProductionOrdersPage } from "./pages/operations/production-orders/Produ
 import { ProductionOrderLotsPage } from "./pages/operations/production-order-lots/ProductionOrderLotsPage";
 
 import { WarehouseReceiptsPage } from "./pages/operations/stock-movements/WarehouseReceiptsPage";
+import { LogisticUnitsPage } from "./pages/operations/logistic-units/LogisticUnitsPage";
 
 export const router = createBrowserRouter([
   {
@@ -125,6 +126,10 @@ export const router = createBrowserRouter([
           {
             path: "production-orders",
             element: <ProductionOrdersPage />,
+          },
+          {
+            path: "logistic-units",
+            element: <LogisticUnitsPage />,
           },
           {
             path: "production-orders/:productionOrderId/lots",

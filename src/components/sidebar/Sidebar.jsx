@@ -61,9 +61,14 @@ const menuItems = [
         label: "Przyjęcia z produkcji",
       },
       {
+        to: "/operations/logistic-units",
+        label: "Jednostki logistyczne",
+      },
+      {
         to: "/operations/warehouse-orders",
         label: "Zlecenia magazynowe",
       },
+
       {
         to: "/operations/print-jobs",
         label: "Wydruki",
