@@ -68,7 +68,6 @@ const menuItems = [
         to: "/operations/warehouse-orders",
         label: "Zlecenia magazynowe",
       },
-
       {
         to: "/operations/print-jobs",
         label: "Wydruki",

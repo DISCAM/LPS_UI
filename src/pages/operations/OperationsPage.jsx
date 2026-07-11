@@ -14,13 +14,14 @@ const operationsLinks = [
     to: "/operations/warehouse-receipts",
     title: "Przyjęcia z produkcji",
   },
-  {
-    to: "/operations/warehouse-orders",
-    title: "Zlecenia magazynowe",
-  },
+
   {
     to: "/operations/logistic-units",
     title: "Jednostki logistyczne",
+  },
+  {
+    to: "/operations/warehouse-orders",
+    title: "Zlecenia magazynowe",
   },
   {
     to: "/operations/print-jobs",

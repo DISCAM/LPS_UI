@@ -2,31 +2,26 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { RoleProtectedRoute } from "./auth/RoleProtectedRoute";
-
 import { LoginPage } from "./pages/login/LoginPage";
 import { DashboardPage } from "./pages/dashboard/DashboardPage";
 import { UsersPage } from "./pages/users/UsersPage";
-
 import { KartotekiPage } from "./pages/kartoteki/KartotekiPage";
 import { KartotekiHome } from "./pages/kartoteki/KartotekiHome";
-
 import { ProductsPage } from "./pages/products/ProductsPage";
 import { CustomersPage } from "./pages/customers/CustomersPage";
 import { PrintersPage } from "./pages/printers/PrintersPage";
 import { LabelTemplatesPage } from "./pages/label-templates/LabelTemplatesPage";
 import { ConfigurationPage } from "./pages/configuration/ConfigurationPage";
-
 import { OperationsPage } from "./pages/operations/OperationsPage";
 import { PrintEanPage } from "./pages/operations/print-ean/PrintEanPage";
-
 import { PrintJobsPage } from "./pages/operations/print-jobs/PrintJobsPage";
 import { PrintJobDetailsPage } from "./pages/operations/printJobsDetails/printJobsDetailsPage";
-
 import { ProductionOrdersPage } from "./pages/operations/production-orders/ProductionOrdersPage";
 import { ProductionOrderLotsPage } from "./pages/operations/production-order-lots/ProductionOrderLotsPage";
-
 import { WarehouseReceiptsPage } from "./pages/operations/stock-movements/WarehouseReceiptsPage";
 import { LogisticUnitsPage } from "./pages/operations/logistic-units/LogisticUnitsPage";
+import { WarehouseOrdersPage } from "./pages/operations/warehouse-orders/WarehouseOrdersPage";
+import { WarehouseOrderDetailsPage } from "./pages/operations/warehouse-order-details/WarehouseOrderDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -134,6 +129,14 @@ export const router = createBrowserRouter([
           {
             path: "production-orders/:productionOrderId/lots",
             element: <ProductionOrderLotsPage />,
+          },
+          {
+            path: "warehouse-orders",
+            element: <WarehouseOrdersPage />,
+          },
+          {
+            path: "warehouse-orders/:warehouseOrderId",
+            element: <WarehouseOrderDetailsPage />,
           },
         ],
       },
