@@ -81,20 +81,8 @@ const menuItems = [
     pathPrefix: "/history",
     children: [
       {
-        to: "/history/print-jobs",
-        label: "Historia wydruków",
-      },
-      {
-        to: "/history/scan-events",
-        label: "Zdarzenia skanowania",
-      },
-      {
-        to: "/history/reprint-requests",
-        label: "Wnioski o ponowny wydruk",
-      },
-      {
         to: "/history/audit-logs",
-        label: "Audyt",
+        label: "Audyt operacji",
       },
     ],
   },

@@ -22,6 +22,7 @@ import { WarehouseReceiptsPage } from "./pages/operations/stock-movements/Wareho
 import { LogisticUnitsPage } from "./pages/operations/logistic-units/LogisticUnitsPage";
 import { WarehouseOrdersPage } from "./pages/operations/warehouse-orders/WarehouseOrdersPage";
 import { WarehouseOrderDetailsPage } from "./pages/operations/warehouse-order-details/WarehouseOrderDetailsPage";
+import { AuditLogsPage } from "./pages/history/audit-logs/AuditLogsPage";
 
 export const router = createBrowserRouter([
   {
@@ -139,6 +140,11 @@ export const router = createBrowserRouter([
             element: <WarehouseOrderDetailsPage />,
           },
         ],
+      },
+
+      {
+        path: "history/audit-logs",
+        element: <AuditLogsPage />,
       },
     ],
   },
