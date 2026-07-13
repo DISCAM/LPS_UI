@@ -25,9 +25,13 @@ const getActionLabel = (action) => {
     CREATE_WAREHOUSE_RECEIPT: "Przyjęcie z produkcji",
     CREATE_PRODUCTION_ORDER: "Utworzenie zlecenia produkcyjnego",
     CREATE_PRODUCTION_LOT: "Utworzenie partii produkcyjnej",
+
     CREATE_PRINT_JOB: "Utworzenie zadania wydruku",
-    REPRINT_LABEL: "Ponowny wydruk etykiety",
+    REPRINT_PRINT_JOB: "Utworzenie reprintu",
     CANCEL_PRINT_JOB: "Anulowanie zadania wydruku",
+    EXECUTE_PRINT_JOB: "Uruchomienie wydruku",
+    SEND_PRINT_JOB: "Wysłanie wydruku do NiceLabel",
+    PRINT_JOB_ERROR: "Błąd wysyłania wydruku",
   };
 
   return actionLabels[action] ?? action;
