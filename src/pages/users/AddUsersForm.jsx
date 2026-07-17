@@ -30,7 +30,14 @@ export const AddUserForm = ({ onSubmit, onCancel }) => {
 
     setError(null);
 
-    await onSubmit(form);
+    const dataToSend = {
+      email: form.email.trim(),
+      fullName: form.fullName.trim(),
+      password: form.password,
+      confirmPassword: form.confirmPassword,
+    };
+
+    await onSubmit(dataToSend);
 
     setForm({
       email: "",
@@ -47,52 +54,77 @@ export const AddUserForm = ({ onSubmit, onCancel }) => {
       {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.row}>
-        <label>Email</label>
+        <label htmlFor="newUserEmail">E-mail</label>
+
         <input
+          id="newUserEmail"
           name="email"
           type="email"
           value={form.email}
           onChange={handleChange}
+          placeholder="np. jan.kowalski@firma.pl"
+          autoComplete="email"
+          maxLength={150}
           required
         />
       </div>
 
       <div className={styles.row}>
-        <label>Imię i nazwisko</label>
+        <label htmlFor="newUserFullName">Imię i nazwisko</label>
+
         <input
+          id="newUserFullName"
           name="fullName"
           type="text"
           value={form.fullName}
           onChange={handleChange}
+          placeholder="np. Jan Kowalski"
+          autoComplete="name"
+          maxLength={150}
           required
         />
       </div>
 
       <div className={styles.row}>
-        <label>Hasło</label>
+        <label htmlFor="newUserPassword">Hasło</label>
+
         <input
+          id="newUserPassword"
           name="password"
           type="password"
           value={form.password}
           onChange={handleChange}
+          placeholder="Wprowadź hasło"
+          autoComplete="new-password"
           required
         />
       </div>
 
       <div className={styles.row}>
-        <label>Powtórz hasło</label>
+        <label htmlFor="newUserConfirmPassword">Powtórz hasło</label>
+
         <input
+          id="newUserConfirmPassword"
           name="confirmPassword"
           type="password"
           value={form.confirmPassword}
           onChange={handleChange}
+          placeholder="Powtórz hasło"
+          autoComplete="new-password"
           required
         />
       </div>
 
       <div className={styles.actions}>
-        <button type="submit">Zapisz</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" className={styles.primaryButton}>
+          Zapisz
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className={styles.actionButton}
+        >
           Anuluj
         </button>
       </div>

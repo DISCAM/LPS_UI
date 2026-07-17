@@ -55,14 +55,17 @@ export const PrinterForm = ({
 
       {printer && (
         <div className={styles.row}>
-          <label>ID</label>
-          <input value={form.printerId ?? ""} disabled />
+          <label htmlFor="printerId">ID</label>
+
+          <input id="printerId" value={form.printerId ?? ""} disabled />
         </div>
       )}
 
       <div className={styles.row}>
-        <label>Nazwa drukarki</label>
+        <label htmlFor="printerName">Nazwa drukarki</label>
+
         <input
+          id="printerName"
           name="name"
           type="text"
           value={form.name}
@@ -74,8 +77,10 @@ export const PrinterForm = ({
       </div>
 
       <div className={styles.row}>
-        <label>Adres IP</label>
+        <label htmlFor="printerIpAddress">Adres IP</label>
+
         <input
+          id="printerIpAddress"
           name="ipAddress"
           type="text"
           value={form.ipAddress}
@@ -83,12 +88,15 @@ export const PrinterForm = ({
           required
           maxLength={45}
           placeholder="np. 192.168.1.120"
+          spellCheck={false}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Lokalizacja</label>
+        <label htmlFor="printerLocation">Lokalizacja</label>
+
         <input
+          id="printerLocation"
           name="location"
           type="text"
           value={form.location}
@@ -99,8 +107,10 @@ export const PrinterForm = ({
       </div>
 
       <div className={styles.row}>
-        <label>Model drukarki</label>
+        <label htmlFor="printerModel">Model drukarki</label>
+
         <input
+          id="printerModel"
           name="printerModel"
           type="text"
           value={form.printerModel}
@@ -111,8 +121,10 @@ export const PrinterForm = ({
       </div>
 
       <div className={styles.row}>
-        <label>Typ integracji</label>
+        <label htmlFor="printerIntegrationType">Typ integracji</label>
+
         <select
+          id="printerIntegrationType"
           name="integrationType"
           value={form.integrationType}
           onChange={handleChange}

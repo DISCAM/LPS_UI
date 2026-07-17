@@ -61,118 +61,142 @@ export const CustomerForm = ({
 
       {customer && (
         <div className={styles.row}>
-          <label>ID</label>
+          <label htmlFor="customerId">ID</label>
 
-          <input value={form.id ?? ""} disabled />
+          <input id="customerId" value={form.id ?? ""} disabled />
         </div>
       )}
 
       <div className={styles.row}>
-        <label>Kod klienta</label>
+        <label htmlFor="customerCode">Kod klienta</label>
 
         <input
+          id="customerCode"
           name="customerCode"
           type="text"
           value={form.customerCode}
           onChange={handleChange}
+          placeholder="np. KLIENT-001"
           required
           maxLength={50}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Nazwa</label>
+        <label htmlFor="customerName">Nazwa</label>
 
         <input
+          id="customerName"
           name="name"
           type="text"
           value={form.name}
           onChange={handleChange}
+          placeholder="np. DISCAM Sp. z o.o."
           required
           maxLength={150}
         />
       </div>
 
       <div className={styles.row}>
-        <label>NIP / numer podatkowy</label>
+        <label htmlFor="taxNumber">NIP / numer podatkowy</label>
 
         <input
+          id="taxNumber"
           name="taxNumber"
           type="text"
           value={form.taxNumber}
           onChange={handleChange}
+          placeholder="np. 1234567890"
           maxLength={30}
         />
       </div>
 
       <div className={styles.row}>
-        <label>E-mail</label>
+        <label htmlFor="customerEmail">E-mail</label>
 
         <input
+          id="customerEmail"
           name="email"
           type="email"
           value={form.email}
           onChange={handleChange}
+          placeholder="np. kontakt@firma.pl"
+          autoComplete="email"
           maxLength={150}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Telefon</label>
+        <label htmlFor="customerPhone">Telefon</label>
 
         <input
+          id="customerPhone"
           name="phone"
-          type="text"
+          type="tel"
           value={form.phone}
           onChange={handleChange}
+          placeholder="np. +48 123 456 789"
+          autoComplete="tel"
           maxLength={30}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Ulica</label>
+        <label htmlFor="customerStreet">Ulica</label>
 
         <input
+          id="customerStreet"
           name="street"
           type="text"
           value={form.street}
           onChange={handleChange}
+          placeholder="np. ul. Przemysłowa 10"
+          autoComplete="street-address"
           maxLength={150}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Kod pocztowy</label>
+        <label htmlFor="customerPostalCode">Kod pocztowy</label>
 
         <input
+          id="customerPostalCode"
           name="postalCode"
           type="text"
           value={form.postalCode}
           onChange={handleChange}
+          placeholder="np. 00-001"
+          autoComplete="postal-code"
           maxLength={20}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Miasto</label>
+        <label htmlFor="customerCity">Miasto</label>
 
         <input
+          id="customerCity"
           name="city"
           type="text"
           value={form.city}
           onChange={handleChange}
+          placeholder="np. Warszawa"
+          autoComplete="address-level2"
           maxLength={100}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Kraj</label>
+        <label htmlFor="customerCountry">Kraj</label>
 
         <input
+          id="customerCountry"
           name="country"
           type="text"
           value={form.country}
           onChange={handleChange}
+          placeholder="np. Polska"
+          autoComplete="country-name"
           maxLength={100}
         />
       </div>

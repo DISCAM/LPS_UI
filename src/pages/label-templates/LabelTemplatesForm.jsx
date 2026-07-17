@@ -9,7 +9,7 @@ export const LabelTemplatesForm = ({
   onCancel,
 }) => {
   const [form, setForm] = useState({
-    id: labelTemplate?.id,
+    id: labelTemplate?.id ?? null,
     name: labelTemplate?.name ?? "",
     labelType: labelTemplate?.labelType ?? "",
     templateEngine: labelTemplate?.templateEngine ?? "",
@@ -35,7 +35,17 @@ export const LabelTemplatesForm = ({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await onSubmit(form);
+    const dataToSend = {
+      ...(form.id !== null && { id: form.id }),
+      name: form.name.trim(),
+      labelType: form.labelType,
+      templateEngine: form.templateEngine,
+      templateReference: form.templateReference.trim(),
+      versionNo: form.versionNo,
+      isDefault: form.isDefault,
+    };
+
+    await onSubmit(dataToSend);
   };
 
   return (
@@ -44,20 +54,23 @@ export const LabelTemplatesForm = ({
 
       {labelTemplate && (
         <div className={styles.row}>
-          <label htmlFor="id">ID</label>
-          <input id="id" value={form.id ?? ""} disabled />
+          <label htmlFor="labelTemplateId">ID</label>
+
+          <input id="labelTemplateId" value={form.id ?? ""} disabled />
         </div>
       )}
 
       <div className={styles.row}>
-        <label htmlFor="name">Nazwa szablonu</label>
+        <label htmlFor="labelTemplateName">Nazwa szablonu</label>
+
         <input
-          id="name"
+          id="labelTemplateName"
           name="name"
           type="text"
           value={form.name}
           onChange={handleChange}
-          maxLength="100"
+          placeholder="np. Etykieta produktowa 100 × 50 mm"
+          maxLength={100}
           required
         />
       </div>
@@ -103,25 +116,28 @@ export const LabelTemplatesForm = ({
 
       <div className={styles.row}>
         <label htmlFor="templateReference">Referencja szablonu</label>
+
         <input
           id="templateReference"
           name="templateReference"
           type="text"
           value={form.templateReference}
           onChange={handleChange}
-          maxLength="255"
           placeholder="np. templates/product-100x50.zpl"
+          maxLength={255}
           required
         />
       </div>
 
       <div className={styles.row}>
         <label htmlFor="versionNo">Numer wersji</label>
+
         <input
           id="versionNo"
           name="versionNo"
           type="number"
-          min="1"
+          min={1}
+          step={1}
           value={form.versionNo}
           onChange={handleChange}
           required

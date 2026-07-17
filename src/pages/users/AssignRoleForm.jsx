@@ -1,10 +1,10 @@
 import { useState } from "react";
 import styles from "./AssignRoleForm.module.css";
 
-const availableRoles = ["SuperAdmin", "Operator", "User", "Admin", "Manager"];
+const availableRoles = ["SuperAdmin", "Admin", "Manager", "User"];
 
 export const AssignRoleForm = ({ user, onSubmit, onCancel }) => {
-  const [roleName, setRoleName] = useState(user.roleName);
+  const [roleName, setRoleName] = useState(user.roleName ?? "User");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -24,10 +24,14 @@ export const AssignRoleForm = ({ user, onSubmit, onCancel }) => {
       </p>
 
       <div className={styles.row}>
-        <label>Rola</label>
+        <label htmlFor="assignedRole">Rola</label>
+
         <select
+          id="assignedRole"
+          name="roleName"
           value={roleName}
           onChange={(event) => setRoleName(event.target.value)}
+          required
         >
           {availableRoles.map((role) => (
             <option key={role} value={role}>
@@ -38,8 +42,15 @@ export const AssignRoleForm = ({ user, onSubmit, onCancel }) => {
       </div>
 
       <div className={styles.actions}>
-        <button type="submit">Zapisz rolę</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" className={styles.primaryButton}>
+          Zapisz rolę
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className={styles.actionButton}
+        >
           Anuluj
         </button>
       </div>

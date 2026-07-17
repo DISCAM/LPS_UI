@@ -26,6 +26,7 @@ export const ProductsForm = ({
     }));
   };
 
+  // zabezpieczamy przed pustymi danymi
   const emptyToNull = (value) => {
     const trimmedValue = value.trim();
 
@@ -53,69 +54,80 @@ export const ProductsForm = ({
 
       {product && (
         <div className={styles.row}>
-          <label>ID</label>
-
-          <input value={form.id ?? ""} disabled />
+          <label htmlFor="productId">ID</label>
+          <input id="productId" value={form.id ?? ""} disabled />
         </div>
       )}
 
       <div className={styles.row}>
-        <label>Kod produktu</label>
+        <label htmlFor="productCode">Kod produktu</label>
 
         <input
+          id="productCode"
           name="productCode"
           type="text"
           value={form.productCode}
           onChange={handleChange}
+          placeholder="np. PROD-001"
           required
           maxLength={50}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Nazwa</label>
+        <label htmlFor="productName">Nazwa</label>
 
         <input
+          id="productName"
           name="name"
           type="text"
           value={form.name}
           onChange={handleChange}
+          placeholder="Wprowadz nazwę produktu"
           required
           maxLength={150}
         />
       </div>
 
       <div className={styles.row}>
-        <label>Opis</label>
+        <label htmlFor="productDescription">Opis</label>
 
         <textarea
+          id="productDescription"
           name="description"
           value={form.description}
           onChange={handleChange}
+          placeholder="Wprowadź dodatkowy opis produktu"
           maxLength={500}
         />
       </div>
 
       <div className={styles.row}>
-        <label>EAN</label>
+        <label htmlFor="productEan">EAN</label>
 
         <input
+          id="productEan"
           name="ean"
           type="text"
           value={form.ean}
           onChange={handleChange}
+          placeholder="np. 5901234123457"
+          inputMode="numeric"
           maxLength={14}
         />
       </div>
 
       <div className={styles.row}>
-        <label>GTIN</label>
+        <label htmlFor="productGtin">GTIN</label>
 
         <input
+          id="productGtin"
           name="gtin"
           type="text"
           value={form.gtin}
           onChange={handleChange}
+          placeholder="np. 05901234123457"
+          inputMode="numeric"
           maxLength={14}
         />
       </div>

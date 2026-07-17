@@ -37,7 +37,13 @@ export const EditUserForm = ({ user, onSubmit, onCancel }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await onSubmit(form);
+    const dataToSend = {
+      ...form,
+      email: form.email.trim(),
+      fullName: form.fullName.trim(),
+    };
+
+    await onSubmit(dataToSend);
   };
 
   return (
@@ -45,40 +51,59 @@ export const EditUserForm = ({ user, onSubmit, onCancel }) => {
       <h2>Edytuj użytkownika</h2>
 
       <div className={styles.row}>
-        <label>ID</label>
-        <input value={form.id} disabled />
+        <label htmlFor="editUserId">ID</label>
+
+        <input id="editUserId" value={form.id ?? ""} disabled />
       </div>
 
       <div className={styles.row}>
-        <label>Email</label>
+        <label htmlFor="editUserEmail">E-mail</label>
+
         <input
+          id="editUserEmail"
           name="email"
           type="email"
           value={form.email}
           onChange={handleChange}
+          placeholder="np. jan.kowalski@firma.pl"
+          autoComplete="email"
+          maxLength={150}
           required
         />
       </div>
 
       <div className={styles.row}>
-        <label>Imię i nazwisko</label>
+        <label htmlFor="editUserFullName">Imię i nazwisko</label>
+
         <input
+          id="editUserFullName"
           name="fullName"
           type="text"
           value={form.fullName}
           onChange={handleChange}
+          placeholder="np. Jan Kowalski"
+          autoComplete="name"
+          maxLength={150}
           required
         />
       </div>
 
       <div className={styles.row}>
-        <label>Aktualne role</label>
-        <input value={form.roleNames.join(", ")} disabled />
+        <label htmlFor="editUserRoles">Aktualne role</label>
+
+        <input id="editUserRoles" value={form.roleNames.join(", ")} disabled />
       </div>
 
       <div className={styles.actions}>
-        <button type="submit">Zapisz zmiany</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" className={styles.primaryButton}>
+          Zapisz zmiany
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className={styles.actionButton}
+        >
           Anuluj
         </button>
       </div>

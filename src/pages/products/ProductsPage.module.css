@@ -43,20 +43,25 @@
 }
 
 .actionButton {
-  border: 1px solid #8a8a8a;
+  border: 1px solid #0e1d77;
   border-radius: 8px;
   background-color: #ffffff;
-  color: #000000;
-  padding: 4px 10px;
+  color: #0e1d77;
+  padding: 6px 12px;
   font-family: inherit;
   font-size: 0.9rem;
-  font-weight: 400;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .actionButton:hover {
-  background-color: #f1f1f1;
+  border-color: #0e1d77;
+  background-color: #0e1d77;
+  color: #ffffff;
 }
 
 .tableWrapper {
@@ -169,6 +174,17 @@
   text-align: center;
   color: #666666;
 }
+
+.actionButton:active {
+  border-color: #0a165c;
+  background-color: #0a165c;
+}
+
+.actionButton:focus-visible {
+  outline: 3px solid rgba(14, 29, 119, 0.25);
+  outline-offset: 2px;
+}
+
 @media (max-width: 900px) {
   .page {
     padding: 16px;
